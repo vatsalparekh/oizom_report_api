@@ -41,3 +41,7 @@ POST request to ```/report/``` with  following json
   ]
 }
 ```
+
+#ToDO
+- Queue mechanism for large number or reports 
+- Files deletion after mailing
