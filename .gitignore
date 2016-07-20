@@ -1,2 +1,5 @@
 *.pyc
-
+venv
+static/*.html
+static/chart_imgs/OZ*.png
+static/pdf/OZ*.pdf
