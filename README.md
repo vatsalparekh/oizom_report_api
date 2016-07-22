@@ -13,7 +13,7 @@
 6. ```python modules/HTML.py-0.04/setup.py install```
 7. ```sudo apt-get install wkhtmltopdf``` or ```pip install pdfkit```
 
-Boom!!!
+Bazinga!!!
 Run by ```python manage.py runserver```
 
 ## API Guidelines
