@@ -11,7 +11,14 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import djcelery
 
+djcelery.setup_loader()
+
+BROKER_URL = "amqp://guest:guest@localhost:5672//"
+
+CELERY_IMPORTS = ('reports.tasks',)
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -38,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'djcelery',
+    'pdfkit'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -75,12 +84,12 @@ WSGI_APPLICATION = 'oizom_reports_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
 
 # Password validation
@@ -124,3 +133,5 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+WKHTMLTOPDF_PATH = '/usr/local/bin/wkhtmltopdf'
