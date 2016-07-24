@@ -1,4 +1,3 @@
-import pdfkit
 import os
 import subprocess
 
@@ -22,7 +21,9 @@ def pdf_generate(html_name):
     print html_name
     print pdf_path
 
-    subprocess.check_call(['wkhtmltopdf', url, pdf_path])
-#    pdfkit.from_file(html_name, pdf_path, options=options)
-#    pdfkit.from_url(url=url, output_path=pdf_path)
+    try:
+        subprocess.check_call(['wkhtmltopdf', url, pdf_path])
+    except Exception:
+        return
+
     return 'static/pdf/' + html_name.split('/')[1].split(".")[0] + '.pdf'

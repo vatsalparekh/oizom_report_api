@@ -6,7 +6,7 @@ import time
 import os
 
 
-def html_generate(user_id, device_id, lte, gte, mail, id=None):
+def html_generate(user_id, device_id, lte, gte, id=None):
 
     if lte < gte:
         lte, gte = gte, lte
@@ -125,5 +125,5 @@ def html_generate(user_id, device_id, lte, gte, mail, id=None):
                     '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>' +
                     '<p> Air Quality Report </p>' + '<img style="display: block; margin:0 auto;" src="' + 'chart_imgs/' + img + '"/>' + value_table + table + '<script src="colorService.js">' + "</script>")
             f.close()
-            
+
             return html_name
