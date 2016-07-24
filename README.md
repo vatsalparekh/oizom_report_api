@@ -11,10 +11,11 @@
 4. ```source venv/bin/active```
 5. ```pip install -r requirements.txt```
 6. ```python modules/HTML.py-0.04/setup.py install```
-7. ```sudo apt-get install wkhtmltopdf``` or ```pip install pdfkit```
+7. ```sudo apt-get install wkhtmltopdf rabbitmq-server```
 
 Bazinga!!!
-Run by ```python manage.py runserver```
+Start Celery by       ```python manage.py celeryd```
+Run django server by  ```python manage.py runserver```
 
 ## API Guidelines
 POST request to ```/report/``` with  following json
@@ -43,5 +44,5 @@ POST request to ```/report/``` with  following json
 ```
 
 #ToDO
-- Queue mechanism for large number or reports 
 - Files deletion after mailing
+- Optimise
