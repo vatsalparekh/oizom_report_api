@@ -14,9 +14,9 @@
 7. ```cd modules/HTML.py-0.04 ``` -> ```python setup.py install```
 
 
--Start Celery        ```python manage.py celeryd &```
-
 -Apply db Migrations ```python manage.py migrate```
+
+-Start Celery        ```python manage.py celeryd &```
 
 if from ```root``` user then on cli -> ```export C_FORCE_ROOT="true"```
 
