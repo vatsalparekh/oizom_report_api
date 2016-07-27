@@ -9,21 +9,30 @@
 2. ```cd oizom_report_api```
 3. ```virtualenv venv```
 4. ```source venv/bin/active```
-5. ```pip install -r requirements.txt```
-6. ```python modules/HTML.py-0.04/setup.py install```
-7. ```sudo apt-get install wkhtmltopdf rabbitmq-server```
+5. ```sudo apt-get install python-pip wkhtmltopdf rabbitmq-server xvfb```
+6. ```pip install -r requirements.txt```
+7. ```cd modules/HTML.py-0.04 ``` -> ```python setup.py install```
+
+
+-Start Celery        ```python manage.py celeryd &```
+
+-Apply db Migrations ```python manage.py migrate```
+
+if from ```root``` user then on cli -> ```export C_FORCE_ROOT="true"```
+
+-Run django server by  ```python manage.py runserver &```
+
+(```&``` for running it on background)
 
 Bazinga!!!
-Start Celery by       ```python manage.py celeryd```
-Run django server by  ```python manage.py runserver```
 
 ## API Guidelines
-POST request to ```/report/``` with  following json
+POST request to ```/report``` with  following json
 
 
 ```json
 {  
-  "reports": 
+  "reports":
   [  
      {  
         "device_id":"OZ",
@@ -46,3 +55,4 @@ POST request to ```/report/``` with  following json
 #ToDO
 - Files deletion after mailing
 - Optimise
+- Error logging where ```Exception```

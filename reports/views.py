@@ -21,4 +21,4 @@ def get_all_request(request):
     except Exception:
         pass
 
-    return Response('Recieved', status=200)
+    return Response('Recieved Request', status=200)

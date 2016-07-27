@@ -30,7 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'h)f&9mdt3gqxt@3f#9&u7b0-2g=hjxhd!=vdpnxa9*mm-npo&('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'djcelery',
-    'pdfkit'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -133,5 +132,3 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
-
-WKHTMLTOPDF_PATH = '/usr/local/bin/wkhtmltopdf'

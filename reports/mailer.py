@@ -26,5 +26,5 @@ def send_mail(path, mail_id):
         print str(e)
 
     if (mail_req.status_code == 200):
-        print 'Mail Sent!'
+        print 'Mail Sent!' + mail_id
         return
