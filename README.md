@@ -56,3 +56,4 @@ POST request to ```/report``` with  following json
 - Files deletion after mailing
 - Optimise
 - Error logging where ```Exception```
+- Seprate HTML template for mail
