@@ -12,7 +12,7 @@ def pdf_generate(html_name):
 
     try:
         subprocess.check_call(
-            ['xvfb', '-a', 'wkhtmltopdf', html_name, pdf_path])
+            ['xvfb-run', '-a', 'wkhtmltopdf', html_name, pdf_path])
     except Exception:
         return
 
