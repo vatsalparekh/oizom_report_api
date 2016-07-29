@@ -18,4 +18,4 @@ def pdf_generate(html_name, label):
         print str(e)
         return
 
-    return 'static/pdf/' + pdf_path
+    return pdf_path
