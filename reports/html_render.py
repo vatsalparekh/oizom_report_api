@@ -16,8 +16,8 @@ def html_generate(user_id, device_id, lte, gte, id=None):
     try:
         req = requests.get('http://tub.oizom.com/' + user_id +
                            '/data/range/hours/' + device_id, params=payload)
-    except Exception:
-        pass
+    except Exception, e:
+        print str(e)
 
     if (req.status_code == 200):
 
@@ -102,7 +102,10 @@ def html_generate(user_id, device_id, lte, gte, id=None):
 
         data = json.dumps(payload)
 
-        req_img = requests.post('http://app.oizom.com:4932/', data=data)
+        try:
+            req_img = requests.post('http://app.oizom.com:4932/', data=data)
+        except Exception, e:
+            print str(e)
 
         if req_img.status_code == 200:
 

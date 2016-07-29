@@ -11,14 +11,17 @@ def get_all_request(request):
 
     received_data = json.loads(request.body)
 
-    try:
-        for items in received_data['reports']:
+    for items in received_data['reports']:
+        try:
             tasks.send_report.delay(items['user_id'],
                                     items['device_id'],
                                     items['lte'],
                                     items['gte'],
-                                    items['mail'])
-    except Exception:
-        pass
+                                    items['mail'],
+                                    items['label'],
+                                    items['type'])
+        except Exception, e:
+            print str(e)
+            continue
 
     return Response('Recieved Request', status=200)
