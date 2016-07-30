@@ -39,14 +39,20 @@ POST request to ```/report``` with  following json
         "gte":"1466706600",
         "lte":"1468564595",
         "user_id":"ID",
-        "mail":"client@example.com"
+        "mail":"client@example.com",
+        "label":"MyDevice",
+        "report_type":"1",
+        "location":"Ahmedabad"
      },
      {  
         "device_id":"OZ-1",
         "gte":"1469018206",
         "lte":"1468564595",
         "user_id":"ID-1",
-        "mail":"client-1@example.com"
+        "mail":"client-1@example.com",
+        "label":"MyDevice",
+        "report_type":"1",
+        "location":"Ahmedabad"
      }
   ]
 }
