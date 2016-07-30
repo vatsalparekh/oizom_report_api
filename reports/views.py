@@ -19,7 +19,8 @@ def get_all_request(request):
                                     items['gte'],
                                     items['mail'],
                                     items['label'],
-                                    items['type'])
+                                    items['report_type'],
+                                    items['location'])
         except Exception, e:
             print str(e)
             continue

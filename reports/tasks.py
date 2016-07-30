@@ -5,11 +5,12 @@ from mailer import send_mail
 
 
 @celery.task
-def send_report(user_id, device_id, lte, gte, mail_id, label, type):
+def send_report(user_id, device_id, lte, gte, mail_id, label, report_type, location):
 
-    if type == '1':
+    if report_type == '1':
 
-        html_name = html_generate(user_id, device_id, lte, gte, mail_id)
+        html_name = html_generate(
+            user_id, device_id, lte, gte, label, location)
         pdf_name = pdf_generate(html_name, label)
         send_mail(pdf_name, mail_id)
 
