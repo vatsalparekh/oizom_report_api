@@ -5,7 +5,8 @@ from mailer import send_mail
 
 
 @celery.task
-def send_report(user_id, device_id, lte, gte, mail_id, label, report_type, location):
+def send_report(user_id, device_id, lte, gte, mail_id, label,
+                report_type, location):
 
     if report_type == '1':
 
