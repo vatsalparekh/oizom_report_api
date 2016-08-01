@@ -19,5 +19,5 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    url(r'^report/', include('reports.urls')),
+    url(r'^report', include('reports.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
