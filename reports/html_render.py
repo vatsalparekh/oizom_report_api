@@ -5,12 +5,12 @@ from datetime import datetime
 import time
 import os
 
-
 def html_generate(user_id, device_id, lte, gte, label, location):
 
     if lte < gte:                        #decides two date between which the data will be generated in the pdf
-        lte, gte = gte, lte              #and if date1 is less than date2 , assign vice versa
-
+        lte, gte = gte, lte              #and if to<from , swap values
+        #lte - less than or equal to date and 'to'
+        #gte - greater than or equal to date and  'from'
     payload = {'lte': lte, 'gte': gte}
 
     try:
@@ -126,8 +126,7 @@ def html_generate(user_id, device_id, lte, gte, label, location):
 
         if req_img.status_code == 200:      #if the image is recieved successfully
 
-            img = str(device_id) + '_' + str(int(lte)) + \
-                str(int(time.time())) + '.png'                  #image name
+            img = str(device_id) + '_' +  str(int(lte)) + str(int(time.time()))+ '.png'              #image name & assigns 'to' value
             f = open(os.path.join('static', 'chart_imgs', img), 'wb')   #generates image path e.g. static/chart_imgs/img
             f.write(req_img.content)
             f.close()
