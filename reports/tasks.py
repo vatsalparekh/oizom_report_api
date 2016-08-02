@@ -2,6 +2,7 @@ from djcelery import celery
 from html_render import html_generate
 from pdf import pdf_generate
 from mailer import send_mail
+import subprocess
 
 
 @celery.task
@@ -10,9 +11,17 @@ def send_report(user_id, device_id, lte, gte, mail_id, label,
 
     if report_type == '1':
 
-        html_name = html_generate(
+        html_name, img = html_generate(
             user_id, device_id, lte, gte, label, location)
         pdf_name = pdf_generate(html_name, label)
         send_mail(pdf_name, mail_id)
+
+    try:
+        subprocess.check_call(['rm', html_name])
+        subprocess.check_call(['rm', 'static/chart_imgs/' + img])
+        subprocess.check_call(['rm', pdf_name])
+
+    except Exception, e:
+        print str(e)
 
     print 'Done!' + label + mail_id

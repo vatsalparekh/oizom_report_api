@@ -297,4 +297,4 @@ def html_generate(user_id, device_id, lte, gte, label, location):
                     '<img style="display: block; margin:0 auto;" src="chart_imgs/' + img + '"/>' + str(gas_value_table) + str(table) + '<script src="colorService.js"></script>')
             f.close()
 
-            return html_name
+            return html_name, img
