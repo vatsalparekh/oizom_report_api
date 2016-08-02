@@ -2,8 +2,7 @@ from djcelery import celery
 from html_render import html_generate
 from pdf import pdf_generate
 from mailer import send_mail
-from deletion import deleted
-
+import os
 @celery.task
 def send_report(user_id, device_id, lte, gte, mail_id, label,
                 report_type, location):
@@ -14,7 +13,8 @@ def send_report(user_id, device_id, lte, gte, mail_id, label,
             user_id, device_id, lte, gte, label, location)
         pdf_name = pdf_generate(html_name, label)
         send_mail(pdf_name, mail_id)
-        deleted(pdf_name,html_name)
-
-
+        #below code removes pdf,html and png files once they're sent
+        os.system("rm ~/Projects/oizom_report_api/"+pdf_name)
+        os.system("rm ~/Projects/oizom_report_api/"+html_name)
+        print("Files sent and deleted!")
     print 'Done!' + label + mail_id

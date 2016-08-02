@@ -5,25 +5,25 @@ from datetime import datetime
 import time
 import os
 
-
 def html_generate(user_id, device_id, lte, gte, label, location):
 
-    if lte < gte:
-        lte, gte = gte, lte
-
+    if lte < gte:                        #decides two date between which the data will be generated in the pdf
+        lte, gte = gte, lte              #and if to<from , swap values
+        #lte - less than or equal to date and 'to'
+        #gte - greater than or equal to date and  'from'
     payload = {'lte': lte, 'gte': gte}
 
     try:
         req = requests.get('http://tub.oizom.com/' + user_id +
-                           '/data/range/hours/' + device_id, params=payload)
+                           '/data/range/hours/' + device_id, params=payload)            #payload basically is an important part among a bunch of information. we can call it as a 'load' that 'pays'
 
     except Exception, e:
         print str(e)
 
-    if (req.status_code == 200):
+    if (req.status_code == 200):            #if recieved the data successfully
 
         table = []
-        table_header = ['Time', 'AQI']
+        table_header = ['Time', 'AQI']      #AQI-AirQualityIndex  Check sample pdf
 
         all_gases = {'p2': 'PM10', 'p3': 'PM1', 'g5': 'O3', 'g4': 'NH3',
                      'g3': 'NO2', 'g1': 'CO2', 'temp': 'Temperature',
@@ -32,7 +32,7 @@ def html_generate(user_id, device_id, lte, gte, label, location):
                      'p1': 'PM2.5', 't': 'Time', 'lat': 'latitude', 'g2': 'CO'}
 
         gases_avlb = req.json()[0]['payload']['d'].keys()
-
+        #gases_avlb=['t','g1','g2','g3','g4','p1','p2','temp','hum','noise']
         gas_sequence = ['p2', 'p1', 'g3', 'g5', 'g2',
                         'g8', 'g4', 'g1', 'temp', 'hum', 'noise']
 
@@ -42,41 +42,42 @@ def html_generate(user_id, device_id, lte, gte, label, location):
 
         for x in gas_sequence:
             if x in gases_avlb:
-                gases.append(x)
-                gases_avlb.remove(x)
+                gases.append(x)             #fill gases
+                gases_avlb.remove(x)        #empty gases_avlb
 
-        for x in gases_avlb:
+        for x in gases_avlb:            #if some element is not in gas_sequence, and still it is in gases_avlb, we append it to the final 'gases' list
             gases.append(x)
+        #above mentioned is done, when some new gas element is introduced
 
         for elements in gases:
 
             try:
-                table_header.append(str(all_gases[elements]))
-
-            except KeyError:
+                table_header.append(str(all_gases[elements]))   #this will show corresponding names of gases w.r.t all_gases in the table as table header along with 'Table' & 'AQI
+            except KeyError:        #if element is not in all_gases, we simply put element name as it is in the table
                 table_header.append(str(elements))
 
-        for elements in req.json():
+        for elements in req.json():     #(1)import requests (2)r=requests.get("put_a_link") (3)r.json()
 
             temp = []
             temp.append(datetime.fromtimestamp(
-                int(elements['payload']['d']['t'])).strftime('%c'))
-            temp.append(elements['aqi'])
-
+                int(elements['payload']['d']['t'])).strftime('%c'))         #datetime.datetime(2016, 6, 25, 23, 30) = 'Sat Jun 25 23:30:00 2016' strftime() gives this format
+                #simply use time.ctime(lte or gte) and will get the same result
+            temp.append(elements['aqi'])                                     #appends time in aqi table
+            #the above mentioned part will print time under table header 'Time'
             for gas in gases:
 
                 if gas != 't':
-                    temp.append(elements['payload']['d'][gas])
+                    temp.append(elements['payload']['d'][gas])  #prints values corresponding to the given gas
             table.append(temp)
 
         table = HTML.table(table, header_row=table_header)
 
         aqi = [x['aqi'] for x in req.json()]
         aqi.reverse()
-
+        #creates a list of aqi values
         ti = (int(gte) * 1000) + 19800000  # UTC to localtime
 
-        chart_payload = {
+        chart_payload = {           #this creates a chart, refer sample pdf
             "chart": {
                 "type": "area",
                 "height": "600",
@@ -115,7 +116,7 @@ def html_generate(user_id, device_id, lte, gte, label, location):
                 "pointInterval": 3600 * 1000
             }]}
 
-        data = json.dumps(chart_payload)
+        data = json.dumps(chart_payload)    #loads value in the object
 
         try:
             req_img = requests.post('http://app.oizom.com:4932/', data=data)
@@ -123,11 +124,10 @@ def html_generate(user_id, device_id, lte, gte, label, location):
         except Exception, e:
             print str(e)
 
-        if req_img.status_code == 200:
+        if req_img.status_code == 200:      #if the image is recieved successfully
 
-            img = str(device_id) + '_' + str(int(lte)) + \
-                str(int(time.time())) + '.png'
-            f = open(os.path.join('static', 'chart_imgs', img), 'wb')
+            img = str(device_id) + '_' +  str(int(lte)) + str(int(time.time()))+ '.png'              #image name & assigns 'to' value
+            f = open(os.path.join('static', 'chart_imgs', img), 'wb')   #generates image path e.g. static/chart_imgs/img
             f.write(req_img.content)
             f.close()
 
@@ -246,15 +246,15 @@ def html_generate(user_id, device_id, lte, gte, label, location):
 					.poor{background-color:#ed9a2e  }
 					.verypoor{background-color:#e8633a  }
 					.severe{background-color:#d63636 }
-					.theme-color,th{background-color:#00b3bf  } 
-					.h1{font-size: 36px;margin-bottom: 8px;margin-top: 0px;} 
-					.h4{font-size: 18px; margin-bottom: 10px; margin-top: 0px;} 
-					.title-left{float: left;display: inline-block;} 
-					.img-right{float: right;display: inline-block;height: 90px} 
-					.logo-img{margin-top: 20px;} 
-					.full-sec{width: 100%; padding: 20px 15px; margin-bottom: 25px;} 
-					.grayed{background-color: #f8f8f8 ;} 
-					.half-sec{width: 48%;text-align: left;font-size: 18px; color:#1a1a1a ; display: inline-block;} 
+					.theme-color,th{background-color:#00b3bf  }
+					.h1{font-size: 36px;margin-bottom: 8px;margin-top: 0px;}
+					.h4{font-size: 18px; margin-bottom: 10px; margin-top: 0px;}
+					.title-left{float: left;display: inline-block;}
+					.img-right{float: right;display: inline-block;height: 90px}
+					.logo-img{margin-top: 20px;}
+					.full-sec{width: 100%; padding: 20px 15px; margin-bottom: 25px;}
+					.grayed{background-color: #f8f8f8 ;}
+					.half-sec{width: 48%;text-align: left;font-size: 18px; color:#1a1a1a ; display: inline-block;}
 					.bold{font-weight: bold;}
                      </style>'''
 
@@ -264,13 +264,13 @@ def html_generate(user_id, device_id, lte, gte, label, location):
                     str(style_tag) +
                     '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>' +
                     '''
-                    <div style="display:block; height:92px;">                		
+                    <div style="display:block; height:92px;">
                 		<div class="title-left">
           	            	<div>
           	        	        <p class="h1"> DAILY AIR-POLLUTION REPORT </p>
-			        	    </div>			                
+			        	    </div>
 			                <p class="h4"> Report Created on  -  ''' + datetime.now().strftime('%A, %d/%m/%Y ') + '''</p>
-			            </div>			            
+			            </div>
 			            <div class="img-right">
 			                <img class="logo-img" src="http://www.oizom.com/assets/images/discover-mobile-350x350-53-black.png">
                         </div>
@@ -280,15 +280,15 @@ def html_generate(user_id, device_id, lte, gte, label, location):
 			            <div class="half-sec">
 			                <div class="time-from">
 			                    <p class="normal"> Time from: <span class="underlined bold">''' + time.ctime(int(lte)) + '''</span></p>
-			                </div>			        
+			                </div>
 			                <div class="time-from">
 			                    <p class="normal"> Time to: <span class="underlined bold">''' + time.ctime(int(gte)) + '''</span></p>
-			                </div>			        
-			            </div>			        
+			                </div>
+			            </div>
 			            <div class="half-sec">
 			                <div class="time-from">
 			                    <p class="normal"> Device Location: <span class="underlined bold">''' + location + '''</span></p>
-			                </div>			        
+			                </div>
 			                <div class="time-from">
 			                    <p class="normal"> Device Name: <span class="underlined bold">''' + label + '''</span></p>
 			                </div>
