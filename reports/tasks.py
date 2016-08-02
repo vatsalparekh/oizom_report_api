@@ -17,9 +17,9 @@ def send_report(user_id, device_id, lte, gte, mail_id, label,
         send_mail(pdf_name, mail_id)
 
     try:
-        subprocess.check_call(['rm', html_name])
-        subprocess.check_call(['rm', 'static/chart_imgs/' + img])
-        subprocess.check_call(['rm', pdf_name])
+        subprocess.call(['rm', html_name])
+        subprocess.call(['rm', 'static/chart_imgs/' + img])
+        subprocess.call(['rm', pdf_name])
 
     except Exception, e:
         print str(e)
