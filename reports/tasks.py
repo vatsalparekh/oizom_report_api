@@ -11,10 +11,14 @@ def send_report(user_id, device_id, lte, gte, mail_id, label,
 
     if report_type == '1':
 
-        html_name, img = html_generate(
-            user_id, device_id, lte, gte, label, location)
-        pdf_name = pdf_generate(html_name, label)
-        send_mail(pdf_name, mail_id)
+        try:
+            html_name, img = html_generate(
+                user_id, device_id, lte, gte, label, location)
+            pdf_name = pdf_generate(html_name, label)
+            send_mail(pdf_name, mail_id)
+
+        except Exception, e:
+            print str(e)
 
     try:
         subprocess.call(['rm', html_name])
