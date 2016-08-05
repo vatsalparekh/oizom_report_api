@@ -3,6 +3,7 @@ from html_render import html_generate
 from pdf import pdf_generate
 from mailer import send_mail
 import subprocess
+from logs import *
 
 
 @celery.task
@@ -22,6 +23,6 @@ def send_report(user_id, device_id, lte, gte, mail_id, label,
         subprocess.call(['rm', pdf_name])
 
     except Exception, e:
-        print str(e)
+        logger.exception("Error: %s", str(e))
 
-    print 'Done!' + label + mail_id
+    logger.info('Done! label: %s and mail_id: %s',label, mail_id )

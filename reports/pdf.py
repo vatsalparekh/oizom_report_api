@@ -1,6 +1,6 @@
 import os
 import subprocess
-
+from logs import *
 
 def pdf_generate(html_name, label):
 
@@ -14,8 +14,9 @@ def pdf_generate(html_name, label):
     try:
         subprocess.check_call(
             ['xvfb-run', '-a', 'wkhtmltopdf', html_name, pdf_path])
+
     except Exception, e:
-        print str(e)
+        logger.exception("%s",str(e))
         return
 
     return pdf_path

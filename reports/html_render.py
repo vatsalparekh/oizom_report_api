@@ -4,7 +4,7 @@ import HTML
 from datetime import datetime
 import time
 import os
-
+from logs import *
 
 def html_generate(user_id, device_id, lte, gte, label, location):
 
@@ -18,7 +18,7 @@ def html_generate(user_id, device_id, lte, gte, label, location):
                            '/data/range/hours/' + device_id, params=payload)
 
     except Exception, e:
-        print str(e)
+        logger.exception("%s",str(e))
 
     if (req.status_code == 200):
 
@@ -121,7 +121,7 @@ def html_generate(user_id, device_id, lte, gte, label, location):
             req_img = requests.post('http://app.oizom.com:4932/', data=data)
 
         except Exception, e:
-            print str(e)
+            logger.exception("%s", str(e))
 
         if req_img.status_code == 200:
 
@@ -246,15 +246,15 @@ def html_generate(user_id, device_id, lte, gte, label, location):
 					.poor{background-color:#ed9a2e  }
 					.verypoor{background-color:#e8633a  }
 					.severe{background-color:#d63636 }
-					.theme-color,th{background-color:#00b3bf  } 
-					.h1{font-size: 36px;margin-bottom: 8px;margin-top: 0px;} 
-					.h4{font-size: 18px; margin-bottom: 10px; margin-top: 0px;} 
-					.title-left{float: left;display: inline-block;} 
-					.img-right{float: right;display: inline-block;height: 90px} 
-					.logo-img{margin-top: 20px;} 
-					.full-sec{width: 100%; padding: 20px 15px; margin-bottom: 25px;} 
-					.grayed{background-color: #f8f8f8 ;} 
-					.half-sec{width: 48%;text-align: left;font-size: 18px; color:#1a1a1a ; display: inline-block;} 
+					.theme-color,th{background-color:#00b3bf  }
+					.h1{font-size: 36px;margin-bottom: 8px;margin-top: 0px;}
+					.h4{font-size: 18px; margin-bottom: 10px; margin-top: 0px;}
+					.title-left{float: left;display: inline-block;}
+					.img-right{float: right;display: inline-block;height: 90px}
+					.logo-img{margin-top: 20px;}
+					.full-sec{width: 100%; padding: 20px 15px; margin-bottom: 25px;}
+					.grayed{background-color: #f8f8f8 ;}
+					.half-sec{width: 48%;text-align: left;font-size: 18px; color:#1a1a1a ; display: inline-block;}
 					.bold{font-weight: bold;}
                      </style>'''
 
@@ -264,13 +264,13 @@ def html_generate(user_id, device_id, lte, gte, label, location):
                     str(style_tag) +
                     '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>' +
                     '''
-                    <div style="display:block; height:92px;">                		
+                    <div style="display:block; height:92px;">
                 		<div class="title-left">
           	            	<div>
           	        	        <p class="h1"> DAILY AIR-POLLUTION REPORT </p>
-			        	    </div>			                
+			        	    </div>
 			                <p class="h4"> Report Created on  -  ''' + datetime.now().strftime('%A, %d/%m/%Y ') + '''</p>
-			            </div>			            
+			            </div>
 			            <div class="img-right">
 			                <img class="logo-img" src="http://www.oizom.com/assets/images/discover-mobile-350x350-53-black.png">
                         </div>
@@ -280,15 +280,15 @@ def html_generate(user_id, device_id, lte, gte, label, location):
 			            <div class="half-sec">
 			                <div class="time-from">
 			                    <p class="normal"> Time from: <span class="underlined bold">''' + time.ctime(int(lte)) + '''</span></p>
-			                </div>			        
+			                </div>
 			                <div class="time-from">
 			                    <p class="normal"> Time to: <span class="underlined bold">''' + time.ctime(int(gte)) + '''</span></p>
-			                </div>			        
-			            </div>			        
+			                </div>
+			            </div>
 			            <div class="half-sec">
 			                <div class="time-from">
 			                    <p class="normal"> Device Location: <span class="underlined bold">''' + location + '''</span></p>
-			                </div>			        
+			                </div>
 			                <div class="time-from">
 			                    <p class="normal"> Device Name: <span class="underlined bold">''' + label + '''</span></p>
 			                </div>

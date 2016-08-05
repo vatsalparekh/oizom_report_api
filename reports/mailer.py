@@ -1,5 +1,5 @@
 import requests
-
+from logs import *
 
 def send_mail(path, mail_id):
 
@@ -23,8 +23,8 @@ def send_mail(path, mail_id):
             files=pdf)
 
     except Exception, e:
-        print str(e)
+        logger.exception("%s", str(e))
 
     if (mail_req.status_code == 200):
-        print 'Mail Sent!' + mail_id
+        logger.info( 'Mail Sent! mail_id is %s' , mail_id)
         return

@@ -1,0 +1,11 @@
+2016-08-05 07:51:22,770 - reports.logs - INFO - Mail Sent! mail_id is parthvi.vala@gmail.com
+2016-08-05 07:51:22,791 - reports.logs - INFO - Done! label: MyDevice and mail_id: parthvi.vala@gmail.com
+2016-08-05 07:52:05,004 - reports.logs - ERROR - request() got an unexpected keyword argument 'filess'
+Traceback (most recent call last):
+  File "/home/parthvivala/oizom_report_api/reports/mailer.py", line 23, in send_mail
+    filess=pdf)
+  File "/home/parthvivala/oizom_report_api/venv/local/lib/python2.7/site-packages/requests/api.py", line 111, in post
+    return request('post', url, data=data, json=json, **kwargs)
+  File "/home/parthvivala/oizom_report_api/venv/local/lib/python2.7/site-packages/requests/api.py", line 57, in request
+    return session.request(method=method, url=url, **kwargs)
+TypeError: request() got an unexpected keyword argument 'filess'
