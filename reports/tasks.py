@@ -18,8 +18,15 @@ def send_report(user_id, device_id, lte, gte, mail_id, label,
             pdf_name = pdf_generate(html_name, label)
             send_mail(pdf_name, mail_id)
 
+            delete_static(html_name, pdf_name, send_mail)
+
         except Exception, e:
             print str(e)
+
+    logger.info('Done! label: %s mail_id: %s', label, mail_id)
+
+
+def delete_static(html_name, img, pdf_name):
 
     try:
         subprocess.call(['rm', html_name])
@@ -28,5 +35,3 @@ def send_report(user_id, device_id, lte, gte, mail_id, label,
 
     except Exception, e:
         logger.exception("%s", str(e))
-
-    logger.info('Done! label: %s mail_id: %s', label, mail_id)

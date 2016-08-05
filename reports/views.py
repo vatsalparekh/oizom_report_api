@@ -12,15 +12,15 @@ def get_all_request(request):
     received_data = json.loads(request.body)
 
     for items in received_data['reports']:
+
         try:
             tasks.send_report.delay(items['user_id'],
                                     items['device_id'],
                                     items['lte'],
                                     items['gte'],
                                     items['mail'],
-                                    items['label'],
-                                    items['report_type'],
-                                    items['location'])
+                                    items['report_type'])
+
         except Exception, e:
             print str(e)
             continue
