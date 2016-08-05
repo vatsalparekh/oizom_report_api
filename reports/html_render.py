@@ -279,10 +279,10 @@ def html_generate(user_id, device_id, lte, gte, label, location):
 					<div class="full-sec grayed">
 			            <div class="half-sec">
 			                <div class="time-from">
-			                    <p class="normal"> Time from: <span class="underlined bold">''' + time.ctime(int(lte)) + '''</span></p>
+			                    <p class="normal"> Time from: <span class="underlined bold">''' + time.ctime(int(gte)) + '''</span></p>
 			                </div>
 			                <div class="time-from">
-			                    <p class="normal"> Time to: <span class="underlined bold">''' + time.ctime(int(gte)) + '''</span></p>
+			                    <p class="normal"> Time to: <span class="underlined bold">''' + time.ctime(int(lte)) + '''</span></p>
 			                </div>
 			            </div>
 			            <div class="half-sec">

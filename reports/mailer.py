@@ -11,8 +11,8 @@ def send_mail(path, mail_id):
     payload['replyTo'] = 'tech@oizom.com'
     payload['replyToName'] = 'Tech @ Oizom'
     payload['to'] = mail_id
-    payload['subject'] = 'Your AirQuality Report has arrived'
-    payload['bodyText'] = 'The Air Quality report is attched'
+    payload['subject'] = 'Your Air Quality Report has arrived'
+    payload['bodyText'] = 'The Air Quality Report is attached'
 
     pdf = {'attachmentFiles': open(path, 'rb')}
 

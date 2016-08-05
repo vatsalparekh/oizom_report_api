@@ -23,6 +23,6 @@ def send_report(user_id, device_id, lte, gte, mail_id, label,
         subprocess.call(['rm', pdf_name])
 
     except Exception, e:
-        logger.exception("Error: %s", str(e))
+        logger.exception("%s", str(e))
 
-    logger.info('Done! label: %s and mail_id: %s',label, mail_id )
+    logger.info('Done! label: %s mail_id: %s',label, mail_id )

@@ -8,8 +8,7 @@ def pdf_generate(html_name, label):
                             html_name.split('_')[-1].split('.')[0] +
                             '.pdf')
 
-    print html_name
-    print pdf_path
+    logger.info("HTML Name: %s PDF Path: %s", html_name, pdf_path)
 
     try:
         subprocess.check_call(
