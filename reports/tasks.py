@@ -29,4 +29,4 @@ def send_report(user_id, device_id, lte, gte, mail_id, label,
     except Exception, e:
         logger.exception("%s", str(e))
 
-    logger.info('Done! label: %s mail_id: %s',label, mail_id )
+    logger.info('Done! label: %s mail_id: %s', label, mail_id)

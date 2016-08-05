@@ -6,6 +6,7 @@ import time
 import os
 from logs import *
 
+
 def html_generate(user_id, device_id, lte, gte, label, location):
 
     if lte < gte:
@@ -18,7 +19,7 @@ def html_generate(user_id, device_id, lte, gte, label, location):
                            '/data/range/hours/' + device_id, params=payload)
 
     except Exception, e:
-        logger.exception("%s",str(e))
+        logger.exception("%s", str(e))
 
     if (req.status_code == 200):
 

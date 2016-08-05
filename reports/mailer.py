@@ -1,6 +1,7 @@
 import requests
 from logs import *
 
+
 def send_mail(path, mail_id):
 
     payload = {}
@@ -26,5 +27,5 @@ def send_mail(path, mail_id):
         logger.exception("%s", str(e))
 
     if (mail_req.status_code == 200):
-        logger.info( 'Mail Sent! mail_id is %s' , mail_id)
+        logger.info('Mail Sent! mail_id is %s', mail_id)
         return
