@@ -60,7 +60,6 @@ POST request to ```/report``` with  following json
 
 #ToDO
 - Jenkins CI/CD
-- Files deletion after mailing
 - Optimise
-- Error logging where ```Exception```
+- logging where ```Exception``` and ```print```
 - Seprate HTML template for mail
