@@ -42,7 +42,7 @@ def html_generate_daily(user_id, device_id, lte, gte, label, location):
         lte, gte = gte, lte
 
     payload = {'lte': lte, 'gte': gte}
-
+    #location, label = get_loc_label(user_id,device_id)
     try:
         req = requests.get('http://tub.oizom.com/' + user_id +
                            '/data/range/hours/' + device_id, params=payload)
@@ -202,7 +202,8 @@ def html_generate_daily(user_id, device_id, lte, gte, label, location):
 			            	<p class="normal" style="margin:0px;"> Pollutants: <span class="underlined bold">''' + ' '.join(str(x) + ',' for x in table_header[2:])[:-1] + '</span></p></div>' +
                     '<img style="display: block; margin:0 auto;" src="chart_imgs/' + img + '"/>' + str(gas_value_table) + str(table) + '<script src="colorService.js"></script>')
             f.close()
-
+            html_header(user_id, device_id, lte, gte, table_header[2:], get_loc_label(
+                user_id, device_id)[0], get_loc_label(user_id, device_id)[1])
             return html_name, img
 
 
@@ -227,3 +228,23 @@ def chart_generate(payload, device_id, gas):
         f.write(req.content)
         f.close()
         return img
+
+
+def get_loc_label(user_id, device_id):
+
+    try:
+        rq = requests.get('http://tub.oizom.com/' +
+                          user_id + '/devices/' + device_id)
+        location = rq.json()[0]['loc']
+        label = rq.json()[0]['label']
+
+    except Exception, e:
+        logger.exception("%s", str(e))
+
+    return location, label
+
+
+def html_header(user_id, device_id, lte, gte, gases, location, label):
+                    user_id, device_id, lte, gte, gases, location, label = \
+                                    user_id, device_id, lte, gte, gases, location, label
+    return
