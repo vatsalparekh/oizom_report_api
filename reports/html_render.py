@@ -6,9 +6,20 @@ import time
 import os
 from logs import *
 
+def get_loc_label(user_id,device_id):
 
-def html_generate(user_id, device_id, lte, gte, label, location):
+    try:
+        rq = requests.get('http://tub.oizom.com/' + user_id + '/devices/' + device_id)
+        loc = rq.json()[0]['loc']
+        label = rq.json()[0]['label']
 
+    except Exception, e:
+        logger.exception("%s", str(e))
+
+    return loc, label
+
+
+def html_generate(user_id, device_id, lte, gte):
     if lte < gte:
         lte, gte = gte, lte
 
@@ -298,4 +309,12 @@ def html_generate(user_id, device_id, lte, gte, label, location):
                     '<img style="display: block; margin:0 auto;" src="chart_imgs/' + img + '"/>' + str(gas_value_table) + str(table) + '<script src="colorService.js"></script>')
             f.close()
 
+            html_header( user_id, device_id, lte, gte, table_header[2:], get_loc_label(user_id,device_id)[0],get_loc_label(user_id,device_id)[1])
+
             return html_name, img
+
+
+def html_header(user_id, device_id, lte, gte, gases, loc, label):
+    user_id, device_id, lte, gte, gases, loc, label = \
+                    user_id,device_id,lte,gte,gases,loc,label
+    return

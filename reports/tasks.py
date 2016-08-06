@@ -21,7 +21,7 @@ def send_report(user_id, device_id, lte, gte, mail_id, label,
             delete_static(html_name, pdf_name, send_mail)
 
         except Exception, e:
-            print str(e)
+            logger.exception("%s", str(e))
 
     logger.info('Done! label: %s mail_id: %s', label, mail_id)
 
