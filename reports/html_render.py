@@ -36,13 +36,15 @@ style_tag = '''<style>
                </style>'''
 
 
-def html_generate_daily(user_id, device_id, lte, gte, label, location):
+def html_generate_daily(user_id, device_id, lte, gte):
 
     if lte < gte:
         lte, gte = gte, lte
 
     payload = {'lte': lte, 'gte': gte}
-    #location, label = get_loc_label(user_id,device_id)
+
+    location, label = get_loc_label(user_id, device_id)
+
     try:
         req = requests.get('http://tub.oizom.com/' + user_id +
                            '/data/range/hours/' + device_id, params=payload)
@@ -52,8 +54,12 @@ def html_generate_daily(user_id, device_id, lte, gte, label, location):
 
     if (req.status_code == 200):
 
-        table = []
-        table_header = ['Time', 'AQI']
+        # header = html_header(user_id, device_id, lte,
+                             # gte, gases, label, location)
+
+        avg_aqi = avg_list([x['aqi'] for x in req.json()])
+
+        gas_avlb = req.json()[0]['payload']['d'].keys()
 
         all_gases = {'p2': 'PM10', 'p3': 'PM1', 'g5': 'O3', 'g4': 'NH3',
                      'g3': 'NO2', 'g1': 'CO2', 'temp': 'Temperature',
@@ -61,114 +67,137 @@ def html_generate_daily(user_id, device_id, lte, gte, label, location):
                      'lon': 'longitude', 'g9': 'sCO', 'g8': 'SO2',
                      'p1': 'PM2.5', 't': 'Time', 'lat': 'latitude', 'g2': 'CO'}
 
-        gases_avlb = req.json()[0]['payload']['d'].keys()
-
-        gas_sequence = ['p2', 'p1', 'g3', 'g5', 'g2',
+        gas_sequence = ['p1', 'p1', 'g3', 'g5', 'g2',
                         'g8', 'g4', 'g1', 'temp', 'hum', 'noise']
 
         gases = []
+        gases_name = []
+        for gas in gas_sequence:
+            if gas in gas_avlb:
+                gases.append(gas)
+                gases_name.append(all_gases[gas])
 
-        gases_avlb.remove('t')
+        avg_gas = []
+        min_gas = []
+        max_gas = []
+        min_gas_timestamp = []
+        max_gas_timestamp = []
 
-        for x in gas_sequence:
-            if x in gases_avlb:
-                gases.append(x)
-                gases_avlb.remove(x)
+        for gas in gases:
+            if gas not in ['temp', 'hum', 'noise']:
 
-        for x in gases_avlb:
-            gases.append(x)
+                all_values = [(x['payload']['d'][gas],
+                               time.ctime(x['payload']['d']['t']))
+                              for x in req.json()]
 
-        for elements in gases:
+                avg_gas.append(avg_list(all_values)[0])
 
-            try:
-                table_header.append(str(all_gases[elements]))
+                min_gas.append(min(all_values)[0])
+                min_gas_timestamp.append(
+                    datetime.fromtimestamp(min(all_values)[1] - 3600).strftime('%H:%M') +
+                    '-' + datetime.fromtimestamp(min(all_values)[1]).strftime('%H:%M, %d %m'))
 
-            except KeyError:
-                table_header.append(str(elements))
+                max_gas.append(max(all_values)[0])
+                max_gas_timestamp(
+                    datetime.fromtimestamp(min(all_values)[1] - 3600).strftime('%H:%M') +
+                    '-' + datetime.fromtimestamp(max(all_values[1])).strftime('%H:%M, %d %m'))
 
-        for elements in req.json():
+        avg_tempr = str(avg_list([x['payload']['d']['temp']
+                                  for x in req.json()])) + '&#x2103;'
 
-            temp = []
-            temp.append(datetime.fromtimestamp(
-                int(elements['payload']['d']['t'])).strftime('%c'))
-            temp.append(elements['aqi'])
+        avg_hum = str(avg_list([x['payload']['d']['hum']
+                                for x in req.json()])) + '%'
 
-            for gas in gases:
+        param_units = []
 
-                if gas != 't':
-                    temp.append(elements['payload']['d'][gas])
-            table.append(temp)
+        # table = []
+        # table_header = ['Time', 'AQI']
 
-        table = HTML.table(table, header_row=table_header)
+        # gases_avlb = req.json()[0]['payload']['d'].keys()
 
-        aqi = [x['aqi'] for x in req.json()]
-        aqi.reverse()
+        # gases = []
 
-        ti = (int(gte) * 1000) + 19800000  # UTC to localtime
+        # gases_avlb.remove('t')
 
-        chart_payload = {
-            "chart": {
-                "type": "area",
-                "height": "600",
-                "marginRight": 130,
-                "marginBottom": 25
-            },
-            "title": {
-                "text": "Average AQI",
-                "x": -20
-            },
-            "subtitle": {
-                "text": "Source: oizom.com",
-                "x": -20
-            },
-            "xAxis": {
-                "title": "Time",
-                "type": 'datetime'
-            },
-            "yAxis": {
-                "title": {
-                    "text": "AQI "
-                },
-                "plotLines": [{
-                    "value": 0,
-                    "width": 1,
-                    "color": "#808080"
-                }]
-            },
-            "legend": "false",
-            "credits": "disable",
+        # for x in gas_sequence:
+        #     if x in gases_avlb:
+        #         gases.append(x)
+        #         gases_avlb.remove(x)
 
-            "series": [{
-                "name": "aqi",
-                "data": aqi,
-                "pointStart": ti,
-                "pointInterval": 3600 * 1000
-            }]}
+        # for x in gases_avlb:
+        #     gases.append(x)
 
-        # data = json.dumps(chart_payload)
+        # for elements in gases:
 
-        # try:
-        #     req_img = requests.post('http://app.oizom.com:4932/', data=data)
+        #     try:
+        #         table_header.append(str(all_gases[elements]))
 
-        # except Exception, e:
-        #     logger.exception("%s", str(e))
+        #     except KeyError:
+        #         table_header.append(str(elements))
 
-        # if req_img.status_code == 200:
+        # for elements in req.json():
 
-        #     img = str(device_id) + '_' + str(int(lte)) + \
-        #         str(int(time.time())) + '.png'
-        #     f = open(os.path.join('static', 'chart_imgs', img), 'wb')
-        #     f.write(req_img.content)
-        #     f.close()
+        #     temp = []
+        #     temp.append(datetime.fromtimestamp(
+        #         int(elements['payload']['d']['t'])).strftime('%c'))
+        #     temp.append(elements['aqi'])
 
-        #     html_name = os.path.join('static', device_id +
-        #                              '_' + str(int(time.time())) + '.html')
+        #     for gas in gases:
+
+        #     if gas != 't':
+        #         temp.append(elements['payload']['d'][gas])
+        # table.append(temp)
+
+        # table = HTML.table(table, header_row=table_header)
+
+        # aqi = [x['aqi'] for x in req.json()]
+        # aqi.reverse()
+
+        # ti = (int(gte) * 1000) + 19800000  # UTC to localtime
+
+        # chart_payload = {
+        #     "chart": {
+        #         "type": "area",
+        #         "height": "600",
+        #         "marginRight": 130,
+        #         "marginBottom": 25
+        #     },
+        #     "title": {
+        #         "text": "Average AQI",
+        #         "x": -20
+        #     },
+        #     "subtitle": {
+        #         "text": "Source: oizom.com",
+        #         "x": -20
+        #     },
+        #     "xAxis": {
+        #         "title": "Time",
+        #         "type": 'datetime'
+        #     },
+        #     "yAxis": {
+        #         "title": {
+        #             "text": "AQI "
+        #         },
+        #         "plotLines": [{
+        #             "value": 0,
+        #             "width": 1,
+        #             "color": "#808080"
+        #         }]
+        #     },
+        #     "legend": "false",
+        #     "credits": "disable",
+
+        #     "series": [{
+        #         "name": "aqi",
+        #         "data": aqi,
+        #         "pointStart": ti,
+        #         "pointInterval": 3600 * 1000
+        #     }]}
 
             f = open(html_name, 'w')
 
             f.write(str(font) +
                     str(style_tag) +
-                    '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>' +
                     '''
                     <div style="display:block; height:92px;">
                 		<div class="title-left">
@@ -207,8 +236,16 @@ def html_generate_daily(user_id, device_id, lte, gte, label, location):
             return html_name, img
 
 
+def html_generate_weekly():
+    pass
+
+
+def html_generate_monthly():
+    pass
+
+
 def avg_list(input_list):
-    return sum(input_list) / float(len(input_list))
+    return sum(input_list) / len(input_list)
 
 
 def chart_generate(payload, device_id, gas):
@@ -244,7 +281,5 @@ def get_loc_label(user_id, device_id):
     return location, label
 
 
-def html_header(user_id, device_id, lte, gte, gases, location, label):
-                    user_id, device_id, lte, gte, gases, location, label = \
-                                    user_id, device_id, lte, gte, gases, location, label
-    return
+def html_header(user_id, device_id, lte, gte, gases, label, location):
+    pass
