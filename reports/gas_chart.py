@@ -72,7 +72,7 @@ def html_pg2(device_id, img_lst):
         }'''
 
     chart_page = os.path.join(
-        'code', 'oizom', device_id + '_' + str(time.time()) + '.html')
+        'static', 'chart_imgs', device_id + '_' + str(time.time()) + '.html')
 
     s ='''
             <p><strong>Hourly Average of Last 24 Hours</strong></p>
