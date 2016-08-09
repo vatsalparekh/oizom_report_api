@@ -74,7 +74,7 @@ def html_pg2(device_id, img_lst):
     chart_page = os.path.join(
         'static', 'chart_imgs', device_id + '_' + str(time.time()) + '.html')
 
-    s ='''
+    s = '''
             <p><strong>Hourly Average of Last 24 Hours</strong></p>
             <hr />
         '''
