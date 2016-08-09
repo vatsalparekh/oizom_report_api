@@ -5,11 +5,9 @@ import os
 import time
 
 
-def chart_generate(device_id, gas, gas_name, ti, unit):
-    
+def chart_generate(device_id, gas, gas_name, ti, unit):    
     chart_payload = {
         "chart": {
-            "zoomType": 'x',
             "marginBottom": 50
         },
         "title": {
