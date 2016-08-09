@@ -6,18 +6,14 @@ import time
 
 
 def chart_generate(device_id, gas, gas_name, ti, unit):
+    
     chart_payload = {
         "chart": {
-            "type": "area",
+            "zoomType": 'x',
             "marginBottom": 50
         },
         "title": {
-            "text": gas_name + " ( " + unit + " )",
-            "x": -20
-        },
-        "subtitle": {
-            "text": "Source: oizom.com",
-            "x": -20
+            "text": gas_name + " ( " + unit + " )"
         },
         "xAxis": {
             "title": {
@@ -28,22 +24,35 @@ def chart_generate(device_id, gas, gas_name, ti, unit):
         "yAxis": {
             "title": {
                 "text": "( " + unit + " )"
-            },
-            "plotLines": [{
-                "value": 0,
-                "width": 1,
-                "color": "#808080"
-            }]
+            }
         },
-        "legend": "false",
-        "credits": "disable",
-
+        "legend": {
+            "enabled": False
+        },
+        "plotOptions": {
+            "area": {
+                "fillColor": {
+                    "linearGradient": {
+                        "x1": 0,
+                        "y1": 0,
+                        "x2": 0,
+                        "y2": 1
+                    },
+                    "stops": [[0, "#00a8e0"],
+                              [1, "#FFFFFF"]]
+                },
+                "lineWidth": 1,
+                "threshold": None
+            }
+        },
         "series": [{
+            "type": 'area',
+            "pointStart": ti,
+            "pointInterval": 3600 * 1000,
             "name": gas_name,
             "data": gas,
-            "pointStart": ti,
-            "pointInterval": 3600 * 1000
-        }]}
+        }]
+    }
 
     data = json.dumps(chart_payload)
 
