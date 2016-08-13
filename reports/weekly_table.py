@@ -31,7 +31,7 @@ def weekly_chart_generate(aqi_data, ti):
         },
         "plotOptions": {
             "column": {
-                "pointPadding": 0,
+                "pointPadding": -0.2,       #take -0.1, or 0
                 "borderWidth": 0
             }
         },
