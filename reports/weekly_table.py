@@ -5,11 +5,12 @@ import time
 import os
 from logs import *
 
+
 def weekly_chart_generate(aqi_data, ti):
     days = [datetime.fromtimestamp(int(i)).strftime("%b %d") for i in ti[::-1]]
     chart_payload = {
         "chart": {
-            "type": 'column'
+            "type": 'column',
         },
         "title": {
             "text": 'Daily AQI Average'
@@ -26,6 +27,12 @@ def weekly_chart_generate(aqi_data, ti):
             "title": {
                 "text": '( ' + '&#181;g/m3' + ' )',
                 "useHTML": True
+            }
+        },
+        "plotOptions": {
+            "column": {
+                "pointPadding": 0,
+                "borderWidth": 0
             }
         },
         "legend": {
@@ -54,13 +61,11 @@ def weekly_chart_generate(aqi_data, ti):
         return img
 
 # if __name__ == '__main__':
-#   try:
-#       rq = requests.get('http://tub.oizom.com/' + user_id +
-#                              '/data/range/hours/' + device_id, params=payload)
-#   except Exception, e:
-        # print(str(e))
-
+#     try:
+#         rq = requests.get(
+#             "http://tub.oizom.com/57204fe3e595aa1d0004e170/data/range/days/OZ_POLLUDRON_006?type=IODA&lte=1469836800&gte=1467331200")
+#     except Exception, e:
+#         print(str(e))
 #     aqi_data = [element['aqi'] for element in rq.json()]
-
 #     ti = [element['payload']['d']['t'] for element in rq.json()]
 #     weekly_chart_generate(aqi_data, ti)
