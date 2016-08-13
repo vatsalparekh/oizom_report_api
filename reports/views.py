@@ -5,6 +5,7 @@ import json
 from reports import tasks
 from logs import *
 
+
 @csrf_exempt
 @api_view(['POST'])
 def get_all_request(request):
@@ -16,10 +17,12 @@ def get_all_request(request):
         try:
             tasks.send_report.delay(items['user_id'],
                                     items['device_id'],
-                                    items['lte'],
                                     items['gte'],
+                                    items['lte'],
                                     items['mail'],
-                                    items['report_type'])
+                                    items['report_type']
+                                    )
+            print 'Sent to task!'
 
         except Exception, e:
             logger.exception("%s", str(e))
