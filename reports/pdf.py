@@ -15,7 +15,8 @@ def pdf_generate(html_name, label):
 
     try:
         for pages, pdf in zip(html_name, pdfs):
-            subprocess.check_call(['wkhtmltopdf', pages, pdf])
+            subprocess.check_call(
+                ['xvfb-run', '-a', 'wkhtmltopdf', pages, pdf])
 
     except Exception, e:
         logger.exception("%s", str(e))
