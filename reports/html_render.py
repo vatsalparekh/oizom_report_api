@@ -95,10 +95,9 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
                   location, org):
 
     report_type = str(report_type)
+    payload = {'lte': lte, 'gte': gte}
 
     if report_type == '0':
-
-        payload = {'lte': lte, 'gte': gte}
 
         try:
             req = requests.get('http://tub.oizom.com/' + user_id +
@@ -113,9 +112,7 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
             overview_page, img_lst, chart_page, table_page = generate_overview(
                 req, report_type, gte, lte, location, org, device_id)
 
-    if report_type == '1':
-
-        payload = {'lte': lte, 'gte': gte}
+    if report_type == '1' or '2':
 
         try:
             req = requests.get('http://tub.oizom.com/' + user_id +
@@ -130,8 +127,8 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
             overview_page, img_lst, chart_page, table_page = generate_overview(
                 req, report_type, gte, lte, label, location, org, device_id)
 
-            print overview_page, img_lst, chart_page, table_page
-            return overview_page, img_lst, chart_page, table_page
+    print overview_page, img_lst, chart_page, table_page
+    return overview_page, img_lst, chart_page, table_page
 
 
 def generate_overview(req, report_type, gte, lte, label,
@@ -153,7 +150,7 @@ def generate_overview(req, report_type, gte, lte, label,
                    'g8': '&#181;g/m3', 'temp': '&#x2103;', 'hum': '%',
                    'g3': '&#181;g/m3', 'g2': 'mg/m3', 'g4': '&#181;g/m3'}
 
-    name = ['Daily', 'Weekly', 'Monthly']
+    name = ['Daily', 'Weekly', 'Monthly'][int(report_type)]
 
     gases = []
 
@@ -192,7 +189,8 @@ def generate_overview(req, report_type, gte, lte, label,
                 max(all_values)[1] - 3600).strftime('%H:%M') +
             '-' + datetime.fromtimestamp(
                 max(all_values)[1]).strftime('%H:%M'),
-            datetime.fromtimestamp(max(all_values)[1]).strftime('%b %d, \'%y')))
+            datetime.fromtimestamp(max(all_values)[1])
+            .strftime('%b %d, \'%y')))
 
         min_gas.append(int(min(all_values)[0]))
         min_gas_timestamp.append((
@@ -200,7 +198,8 @@ def generate_overview(req, report_type, gte, lte, label,
                 min(all_values)[1] - 3600).strftime('%H:%M') +
             '-' + datetime.fromtimestamp(
                 min(all_values)[1]).strftime('%H:%M'),
-            datetime.fromtimestamp(min(all_values)[1]).strftime('%b %d, \'%y')))
+            datetime.fromtimestamp(min(all_values)[1])
+            .strftime('%b %d, \'%y')))
 
     avg_tempr = str(int(avg_list([x['payload']['d']['temp']
                                   for x in req.json()]))) + '&#x2103;'
@@ -218,7 +217,7 @@ def generate_overview(req, report_type, gte, lte, label,
 
     html_code = ''
     header = html_header(
-        org, name[int(report_type)], lte, gte, gases, label, location)
+        org, name, lte, gte, gases, label, location)
 
     html_code = font + jquery_js + style_tag + header + \
         '''<div class="average-aqi-section">
@@ -227,9 +226,15 @@ def generate_overview(req, report_type, gte, lte, label,
         str(avg_aqi) + '&nbsp;&nbsp;&nbsp;</span></p></div><br>' + \
         '<p style="font-size:16px"> Daily Overview (24 hours) <br>' + \
         HTML.table(table, header_row=[''] + [all_gases[x] + '<br>(' + param_units[x] + ')' for x in only_gases]) + \
-        '<div class="average-aqi-section small"><p> Average Temperature: <span class="aqi-answer">&nbsp;&nbsp;&nbsp;' + avg_tempr + '&nbsp;&nbsp;&nbsp;</span></p><br>' + \
-        '<p> Average Humidity: <span class="aqi-answer">&nbsp;&nbsp;&nbsp;' + avg_hum + '&nbsp;&nbsp;&nbsp;</span></p><br></div>' + \
-        '''<div class="approved-container"><div class="approved-blank">
+        '''<div class="average-aqi-section small">
+        <p> Average Temperature:
+        <span class="aqi-answer">&nbsp;&nbsp;&nbsp;''' + \
+        avg_tempr + '&nbsp;&nbsp;&nbsp;</span></p><br>' + \
+        '''<p> Average Humidity:
+        <span class="aqi-answer">&nbsp;&nbsp;&nbsp;''' + \
+        avg_hum + '&nbsp;&nbsp;&nbsp;</span></p><br></div>' + \
+        '''<div class="approved-container">
+        <div class="approved-blank">
         &nbsp;
         </div>
         <div class="approved-div">
@@ -241,7 +246,9 @@ def generate_overview(req, report_type, gte, lte, label,
             <p> Place&nbsp;&nbsp;: ________________________________________</p>
         </div>
         </div>''' + \
-        '''<div class="float-left margin-top-25 margin-l-3em display-inline">Page 1 out of 4</div>
+        '''<div class="float-left margin-top-25 margin-l-3em display-inline">
+        Page 1 out of 4
+        </div>
         <div class="display-inline margin-r-3em right-float text-right margin-top-25">
         Powered by <img src="black-logo.png" class="logo-footer">
         </div>'''
@@ -284,7 +291,6 @@ def generate_gas_charts(device_id, img_lst, header, report_type):
         chart_page = os.path.join(
             'static', str(device_id) + '_chart_' +
             str(int(time.time())) + '_' + str(l) + '.html')
-        print chart_page
 
         f = open(chart_page, 'w')
 
@@ -365,15 +371,16 @@ def generate_table(req, device_id, header, request_type):
 
     table_header = ['Time']
 
-    #=====================Table-Header========================================
+#   =================Table-Header==================
     for elements in gases:
         try:
             table_header.append(
-                str(all_gases[elements]) + '<br>(' + str(param_units[elements]) + ')')
+                str(all_gases[elements]) +
+                '<br>(' + str(param_units[elements]) + ')')
         except KeyError:
             table_header.append(str(elements))
 
-    #=====================Table===============================================
+#   =====================Table=====================
     for elements in req.json():
         temp = []
 
@@ -562,7 +569,6 @@ def chart_generate(device_id, gas, gas_name, gte, unit, report_type):
         f = open(os.path.join('static', 'chart_imgs', img), 'wb')
         f.write(req.content)
         f.close()
-        print img
         return img
 
 
