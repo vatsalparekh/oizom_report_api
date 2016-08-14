@@ -10,11 +10,8 @@ def pdf_generate(html_name, label):
                             html_name[0].split('_')[-1].split('.')[0] +
                             '.pdf')
 
-    pdfs = [os.path.join('static', 'pdf', 'part_' +
-                         x.split('_')[-1].split('.')[0] +
-                         '.pdf') for x in html_name]
-
-    logger.info("HTML Name: %s PDF Path: %s", html_name, pdf_path)
+    pdfs = [os.path.join('static', 'pdf', 'part_' + x.split('/')
+                         [1].split('.')[0] + '.pdf') for x in html_name]
 
     try:
         for pages, pdf in zip(html_name, pdfs):

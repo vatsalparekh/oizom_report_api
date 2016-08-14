@@ -23,10 +23,12 @@ def send_report(user_id, device_id, gte, lte, mail_id, report_type,
     try:
         html_name, img_lst, chart_page, table_page = html_generate(
             user_id, device_id, gte, lte, report_type, label, location, org)
+        pdf_list = [html_name]
+        for x in chart_page:
+            pdf_list.append(x)
+        pdf_list.append(table_page)
 
-        chart_page = ' '.join(str(x) for x in chart_page)
-
-        pdf_name = pdf_generate([html_name, chart_page, table_page], label)
+        pdf_name = pdf_generate(pdf_list, label)
 
         send_mail(pdf_name, mail_id)
 

@@ -103,21 +103,7 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
             req = requests.get('http://tub.oizom.com/' + user_id +
                                '/data/range/hours/' + device_id,
                                params=payload)
-
-        except Exception, e:
-            logger.exception("%s", str(e))
-
-        if req.status_code == 200:
-
-            overview_page, img_lst, chart_page, table_page = generate_overview(
-                req, report_type, gte, lte, location, org, device_id)
-
-    if report_type == '1' or '2':
-
-        try:
-            req = requests.get('http://tub.oizom.com/' + user_id +
-                               '/data/range/days/' + device_id,
-                               params=payload)
+            print report_type, req.url
 
         except Exception, e:
             logger.exception("%s", str(e))
@@ -127,8 +113,27 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
             overview_page, img_lst, chart_page, table_page = generate_overview(
                 req, report_type, gte, lte, label, location, org, device_id)
 
-    print overview_page, img_lst, chart_page, table_page
-    return overview_page, img_lst, chart_page, table_page
+            print overview_page, img_lst, chart_page, table_page
+            return overview_page, img_lst, chart_page, table_page
+
+    if report_type == '1' or '2':
+
+        try:
+            req = requests.get('http://tub.oizom.com/' + user_id +
+                               '/data/range/days/' + device_id,
+                               params=payload)
+            print report_type, req.url
+
+        except Exception, e:
+            logger.exception("%s", str(e))
+
+        if req.status_code == 200:
+
+            overview_page, img_lst, chart_page, table_page = generate_overview(
+                req, report_type, gte, lte, label, location, org, device_id)
+
+            print overview_page, img_lst, chart_page, table_page
+            return overview_page, img_lst, chart_page, table_page
 
 
 def generate_overview(req, report_type, gte, lte, label,
@@ -159,6 +164,11 @@ def generate_overview(req, report_type, gte, lte, label,
             gases.append(gas)
 
     only_gases = [x for x in gases if x not in ['temp', 'hum', 'noise']]
+
+    if report_type == '0':
+        pages = str(2 + int(math.ceil(len(only_gases) / 3.0)))
+    else:
+        pages = '3'
 
     avg_aqi = avg_list([int(x['aqi']) for x in req.json()])
 
@@ -224,7 +234,7 @@ def generate_overview(req, report_type, gte, lte, label,
             <p> Average AQI (24 hours):
             <span class="aqi-answer">&nbsp;&nbsp;&nbsp;''' + \
         str(avg_aqi) + '&nbsp;&nbsp;&nbsp;</span></p></div><br>' + \
-        '<p style="font-size:16px"> Daily Overview (24 hours) <br>' + \
+        '<p style="font-size:16px"> <strong>Daily Overview (24 hours)</strong> <br>' + \
         HTML.table(table, header_row=[''] + [all_gases[x] + '<br>(' + param_units[x] + ')' for x in only_gases]) + \
         '''<div class="average-aqi-section small">
         <p> Average Temperature:
@@ -247,8 +257,8 @@ def generate_overview(req, report_type, gte, lte, label,
         </div>
         </div>''' + \
         '''<div class="float-left margin-top-25 margin-l-3em display-inline">
-        Page 1 out of 4
-        </div>
+        Page 1 out of ''' + pages + \
+        '''</div>
         <div class="display-inline margin-r-3em right-float text-right margin-top-25">
         Powered by <img src="black-logo.png" class="logo-footer">
         </div>'''
@@ -261,12 +271,13 @@ def generate_overview(req, report_type, gte, lte, label,
     f.close()
 
     if report_type == '0':
-        chart_page = generate_gas_charts(device_id, img_lst, header)
-        table_page = generate_table(req, device_id, header, report_type)
+        chart_page = generate_gas_charts(device_id, img_lst, header,
+                                         report_type, pages)
+        table_page = generate_table(req, device_id, header, report_type, pages)
 
         return html_name, img_lst, chart_page, table_page
 
-    if report_type == '1':
+    if report_type == '1' or '2':
         temp_gas_data = [x['aqi'] for x in req.json()]
         temp_gas_time = [int(x['payload']['d']['t']) for x in req.json()]
 
@@ -276,13 +287,13 @@ def generate_overview(req, report_type, gte, lte, label,
         img_lst.append(chart)
 
         chart_page = generate_gas_charts(
-            device_id, img_lst, header, report_type)
-        table_page = generate_table(req, device_id, header, report_type)
+            device_id, img_lst, header, report_type, pages)
+        table_page = generate_table(req, device_id, header, report_type, pages)
 
         return html_name, img_lst, chart_page, table_page
 
 
-def generate_gas_charts(device_id, img_lst, header, report_type):
+def generate_gas_charts(device_id, img_lst, header, report_type, pages):
 
     chart_list = []
 
@@ -317,7 +328,7 @@ def generate_gas_charts(device_id, img_lst, header, report_type):
 
         s += '''<div class="float-left margin-top-25 margin-l-3em display-inline">
                 Page &nbsp;''' + str(l + 2) + ' out of ' + \
-            str(int(math.ceil(len(img_lst) / 3)) + 2) + \
+            pages + \
             '''</div>
             <div class="display-inline margin-r-3em right-float text-right margin-top-25">
                    Powered by
@@ -331,7 +342,7 @@ def generate_gas_charts(device_id, img_lst, header, report_type):
     return chart_list
 
 
-def generate_table(req, device_id, header, request_type):
+def generate_table(req, device_id, header, request_type, pages):
 
     table_css = '''
     <style>
@@ -407,8 +418,8 @@ def generate_table(req, device_id, header, request_type):
 
     s += t + '<script src="colorService.js"></script>' + \
         '''<div class="float-left margin-top-25 margin-l-3em display-inline">
-        Page 4 out of 4
-        </div>
+        Page ''' + pages + ' out of ' + pages + \
+        '''</div>
         <div class="display-inline margin-r-3em right-float text-right margin-top-25">
         Powered by <img src="black-logo.png" class="logo-footer">
         </div>'''
@@ -461,7 +472,6 @@ def html_header(org, name, lte, gte, gases, label, location):
 
 
 def chart_generate(device_id, gas, gas_name, gte, unit, report_type):
-    report_type = str(report_type)
 
     if report_type == '0':
         chart_payload = {
@@ -517,7 +527,7 @@ def chart_generate(device_id, gas, gas_name, gte, unit, report_type):
                 "pointInterval": 3600 * 1000
             }]}
 
-    if report_type == '1' or '2':
+    elif report_type == '1' or '2':
         days = [datetime.fromtimestamp(
             int(x)).strftime("%b %d") for x in gte[::-1]]
         chart_payload = {
