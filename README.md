@@ -53,8 +53,10 @@ POST request to ```/report``` with  following json
   ]
 }
 ```
-0 : Daily Report
-1 : Weekly Report
+0 : Daily Report,
+
+1 : Weekly Report,
+
 2 : Monthly Report
 
 
