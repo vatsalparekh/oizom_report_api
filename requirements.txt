@@ -1,5 +1,6 @@
+setuptools
 requests
 django == 1.9.8
-setuptools
 django_celery == 3.1.17
 djangorestframework == 3.4.0
+PyPDF2
