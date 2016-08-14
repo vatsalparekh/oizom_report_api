@@ -39,8 +39,8 @@ POST request to ```/report``` with  following json
         "gte":"1466706600",
         "lte":"1468564595",
         "user_id":"ID",
-        "mail":"client@example.com"
-        "report_type":"0",
+        "mail":"client@example.com",
+        "report_type" : "0",
      },
      {  
         "device_id":"OZ-1",
@@ -48,13 +48,15 @@ POST request to ```/report``` with  following json
         "lte":"1468564595",
         "user_id":"ID-1",
         "mail":"client-1@example.com",
-        "report_type":"1",
+        "report_type" : "1",
      }
   ]
 }
 ```
-0 : Daily Report
-1 : Weekly Report
+0 : Daily Report,
+
+1 : Weekly Report,
+
 2 : Monthly Report
 
 
