@@ -40,7 +40,7 @@ POST request to ```/report``` with  following json
         "lte":"1468564595",
         "user_id":"ID",
         "mail":"client@example.com"
-        "report_type":"0",
+        "report_type" : "0",
      },
      {  
         "device_id":"OZ-1",
@@ -48,7 +48,7 @@ POST request to ```/report``` with  following json
         "lte":"1468564595",
         "user_id":"ID-1",
         "mail":"client-1@example.com",
-        "report_type":"1",
+        "report_type" : "1",
      }
   ]
 }
