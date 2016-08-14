@@ -5,7 +5,7 @@
 ```sudo apt-get install python-virtualenv```
 
 ## Steps to install
-1. ```Git clone https://github.com/vatsalparekh/oizom_report_api```
+1. ```git clone https://github.com/vatsalparekh/oizom_report_api```
 2. ```cd oizom_report_api```
 3. ```virtualenv venv```
 4. ```source venv/bin/active```
