@@ -8,7 +8,8 @@ import requests
 
 
 @celery.task
-def send_report(user_id, device_id, gte, lte, mail_id, report_type):
+def send_report(user_id, device_id, gte, lte, mail_id, report_type,
+                org='AMC (Ahmedabad Municipal Corporation)'):
 
     try:
         req = requests.get('http://tub.oizom.com/' +

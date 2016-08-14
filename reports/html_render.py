@@ -92,7 +92,7 @@ border-bottom: 1px solid #5d5d5d;
 
 
 def html_generate(user_id, device_id, gte, lte, report_type, label,
-                  location, org='AMC (Ahmedabad Municipal Corporation)'):
+                  location, org):
 
     report_type = str(report_type)
 
