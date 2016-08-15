@@ -263,7 +263,7 @@ def generate_overview(req, report_type, gte, lte, label,
 
         return html_name, img_lst, chart_page, table_page
 
-    if report_type == '1':
+    elif report_type == '1' or '2':
         temp_gas_data = [x['aqi']
                          for x in req.json()]  # it appends all values of aqi
         temp_gas_time = [int(x['payload']['d']['t'])
@@ -300,7 +300,7 @@ def generate_gas_charts(device_id, img_lst, header, report_type):
                 Hourly Average of 24 Hours
                 </strong></p>
                 <br>'''
-        if report_type == '1':
+        elif report_type == '1' or '2':
             s += ''' <p style="font-size:16px"><strong>
                 Daily AQI Average
                 </strong></p>
@@ -425,354 +425,6 @@ def html_header(org, name, lte, gte, gases, label, location):
                  'lon': 'longitude', 'g9': 'CO', 'g8': 'SO2', 'noise': 'Noise',
                  'p1': 'PM2.5', 't': 'Time', 'lat': 'latitude', 'g2': 'CO'}
 
-=======
-                  location, org):
-
-    report_type = str(report_type)
-    payload = {'lte': lte, 'gte': gte}
-
-    if report_type == '0':
-
-        try:
-            req = requests.get('http://tub.oizom.com/' + user_id +
-                               '/data/range/hours/' + device_id,
-                               params=payload)
-            print report_type, req.url
-
-        except Exception, e:
-            logger.exception("%s", str(e))
-
-        if req.status_code == 200:
-
-            overview_page, img_lst, chart_page, table_page = generate_overview(
-                req, report_type, gte, lte, label, location, org, device_id)
-
-            print overview_page, img_lst, chart_page, table_page
-            return overview_page, img_lst, chart_page, table_page
-
-    elif report_type == '1' or '2':
-
-        try:
-            req = requests.get('http://tub.oizom.com/' + user_id +
-                               '/data/range/days/' + device_id,
-                               params=payload)
-            print report_type, req.url
-
-        except Exception, e:
-            logger.exception("%s", str(e))
-
-        if req.status_code == 200:
-
-            overview_page, img_lst, chart_page, table_page = generate_overview(
-                req, report_type, gte, lte, label, location, org, device_id)
-
-            print overview_page, img_lst, chart_page, table_page
-            return overview_page, img_lst, chart_page, table_page
-
-
-def generate_overview(req, report_type, gte, lte, label,
-                      location, org, device_id):
-
-    gas_avlb = req.json()[0]['payload']['d'].keys()
-
-    all_gases = {'p2': 'PM10', 'p3': 'PM1', 'g5': 'O3', 'g4': 'NH3',
-                 'g3': 'NO2', 'g1': 'CO2', 'temp': 'Temperature',
-                 'g6': 'H2S', 'g7': 'NO2', 'hum': 'Humidity',
-                 'lon': 'longitude', 'g9': 'CO', 'g8': 'SO2', 'noise': 'Noise',
-                 'p1': 'PM2.5', 't': 'Time', 'lat': 'latitude', 'g2': 'CO'}
-
-    gas_sequence = ['p1', 'p2', 'g3', 'g5', 'g2',
-                    'g8', 'g4', 'g1', 'temp', 'hum', 'noise']
-
-    param_units = {'p1': '&#181;g/m3', 'p2': '&#181;g/m3', 'g1': 'ppm',
-                   'g7': '&#181;g/m3', 'g9': 'mg/m3', 'g5': '&#181;g/m3',
-                   'g8': '&#181;g/m3', 'temp': '&#x2103;', 'hum': '%',
-                   'g3': '&#181;g/m3', 'g2': 'mg/m3', 'g4': '&#181;g/m3'}
-
-    name = ['Daily', 'Weekly', 'Monthly'][int(report_type)]
-
-    gases = []
-
-    for gas in gas_sequence:
-        if gas in gas_avlb:
-            gases.append(gas)
-
-    only_gases = [x for x in gases if x not in ['temp', 'hum', 'noise']]
-
-    if report_type == '0':
-        pages = str(2 + int(math.ceil(len(only_gases) / 3.0)))
-    else:
-        pages = '3'
-
-    avg_aqi = avg_list([int(x['aqi']) for x in req.json()])
-
-    avg_gas = []
-    min_gas = []
-    max_gas = []
-    min_gas_timestamp = []
-    max_gas_timestamp = []
-
-    img_lst = []
-
-    for gas in only_gases:
-
-        all_values = [(int(x['payload']['d'][gas]),
-                       int(x['payload']['d']['t']))
-                      for x in req.json()]
-
-        if report_type == '0':
-            img_lst.append(chart_generate(
-                device_id, [x[0] for x in all_values], all_gases[gas],
-                gte, param_units[gas], report_type))
-
-        avg_gas.append(avg_list([x[0] for x in all_values]))
-
-        max_gas.append(int(max(all_values)[0]))
-        max_gas_timestamp.append((
-            datetime.fromtimestamp(
-                max(all_values)[1] - 3600).strftime('%H:%M') +
-            '-' + datetime.fromtimestamp(
-                max(all_values)[1]).strftime('%H:%M'),
-            datetime.fromtimestamp(max(all_values)[1])
-            .strftime('%b %d, \'%y')))
-
-        min_gas.append(int(min(all_values)[0]))
-        min_gas_timestamp.append((
-            datetime.fromtimestamp(
-                min(all_values)[1] - 3600).strftime('%H:%M') +
-            '-' + datetime.fromtimestamp(
-                min(all_values)[1]).strftime('%H:%M'),
-            datetime.fromtimestamp(min(all_values)[1])
-            .strftime('%b %d, \'%y')))
-
-    avg_tempr = str(int(avg_list([x['payload']['d']['temp']
-                                  for x in req.json()]))) + '&#x2103;'
-
-    avg_hum = str(int(avg_list([x['payload']['d']['hum']
-                                for x in req.json()]))) + '%'
-
-    table = [['Average (24 Hours)'] + avg_gas] + \
-        [['Maximum'] + max_gas] + \
-        [[''] + [x[0] for x in max_gas_timestamp]] + \
-        [[''] + [x[1] for x in max_gas_timestamp]] + \
-        [['Minimum'] + min_gas] + \
-        [[''] + [x[0] for x in min_gas_timestamp]] + \
-        [[''] + [x[1] for x in min_gas_timestamp]]
-
-    html_code = ''
-    header = html_header(
-        org, name, lte, gte, gases, label, location)
-
-    html_code = font + jquery_js + style_tag + header + \
-        '''<div class="average-aqi-section">
-            <p> Average AQI (24 hours):
-            <span class="aqi-answer">&nbsp;&nbsp;&nbsp;''' + \
-        str(avg_aqi) + '&nbsp;&nbsp;&nbsp;</span></p></div><br>' + \
-        '<p style="font-size:16px"> <strong>Daily Overview (24 hours)</strong> <br>' + \
-        HTML.table(table, header_row=[''] + [all_gases[x] + '<br>(' + param_units[x] + ')' for x in only_gases]) + \
-        '''<div class="average-aqi-section small">
-        <p> Average Temperature:
-        <span class="aqi-answer">&nbsp;&nbsp;&nbsp;''' + \
-        avg_tempr + '&nbsp;&nbsp;&nbsp;</span></p><br>' + \
-        '''<p> Average Humidity:
-        <span class="aqi-answer">&nbsp;&nbsp;&nbsp;''' + \
-        avg_hum + '&nbsp;&nbsp;&nbsp;</span></p><br></div>' + \
-        '''<div class="approved-container">
-        <div class="approved-blank">
-        &nbsp;
-        </div>
-        <div class="approved-div">
-            <p> Verified by: </p>
-        <div class="verified-signature">
-        </div>
-            <p> Name : ________________________________________</p>
-            <p> Date &nbsp;&nbsp;: ________________________________________</p>
-            <p> Place&nbsp;&nbsp;: ________________________________________</p>
-        </div>
-        </div>''' + \
-        '''<div class="float-left margin-top-25 margin-l-3em display-inline">
-        Page 1 out of ''' + pages + \
-        '''</div>
-        <div class="display-inline margin-r-3em right-float text-right margin-top-25">
-        Powered by <img src="black-logo.png" class="logo-footer">
-        </div>'''
-
-    html_name = 'static/' + device_id + '_overview_' + \
-        str(int(time.time())) + '.html'
-
-    f = open(html_name, 'w')
-    f.write(html_code)
-    f.close()
-
-    if report_type == '0':
-        chart_page = generate_gas_charts(device_id, img_lst, header,
-                                         report_type, pages)
-        table_page = generate_table(req, device_id, header, report_type, pages)
-
-        return html_name, img_lst, chart_page, table_page
-
-    elif report_type == '1' or '2':
-        temp_gas_data = [x['aqi'] for x in req.json()]
-        temp_gas_time = [int(x['payload']['d']['t']) for x in req.json()]
-
-        chart = chart_generate(
-            device_id, temp_gas_data, 'AQI', temp_gas_time,
-            'Ug/m3', report_type)
-        img_lst.append(chart)
-
-        chart_page = generate_gas_charts(
-            device_id, img_lst, header, report_type, pages)
-        table_page = generate_table(req, device_id, header, report_type, pages)
-
-        return html_name, img_lst, chart_page, table_page
-
-
-def generate_gas_charts(device_id, img_lst, header, report_type, pages):
-
-    chart_list = []
-
-    for l in range(int(math.ceil(len(img_lst) / 3.0))):
-
-        chart_page = os.path.join(
-            'static', str(device_id) + '_chart_' +
-            str(int(time.time())) + '_' + str(l) + '.html')
-
-        f = open(chart_page, 'w')
-
-        s = font + style_tag + header
-
-        if report_type == '0':
-            s += ''' <p style="font-size:16px"><strong>
-                Hourly Average of 24 Hours
-                </strong></p>
-                <br>'''
-        if report_type == '1':
-            s += ''' <p style="font-size:16px"><strong>
-                Daily AQI Average
-                </strong></p>
-                <br>'''
-
-        for img in img_lst[l * 3:(l + 1) * 3]:
-
-            s += '''
-                <div class="chart-imgs">
-                    <img src = " ''' + 'chart_imgs/' + str(img) + ''' "> </img>
-                </div>
-                '''
-
-        s += '''<div class="float-left margin-top-25 margin-l-3em display-inline">
-                Page &nbsp;''' + str(l + 2) + ' out of ' + \
-            pages + \
-            '''</div>
-            <div class="display-inline margin-r-3em right-float text-right margin-top-25">
-                   Powered by
-                   <img src="black-logo.png" class="logo-footer">
-               </div>'''
-
-        f.write(s)
-        f.close()
-        chart_list.append(chart_page)
-
-    return chart_list
-
-
-def generate_table(req, device_id, header, request_type, pages):
-
-    table_css = '''
-    <style>
-        table td{padding: 5px 15px;}
-        table tr td:first-child{width:20%}
-    </style>
-    '''
-    gas_avlb = req.json()[0]['payload']['d'].keys()
-
-    all_gases = {'p2': 'PM10', 'p3': 'PM1', 'g5': 'O3', 'g4': 'NH3',
-                 'g3': 'NO2', 'g1': 'CO2', 'temp': 'Temp.',
-                 'g6': 'H2S', 'g7': 'NO2', 'hum': 'Hum.',
-                 'lon': 'longitude', 'g9': 'CO', 'g8': 'SO2', 'noise': 'Noise',
-                 'p1': 'PM2.5', 't': 'Time', 'lat': 'latitude', 'g2': 'CO'}
-
-    gas_sequence = ['p1', 'p2', 'g3', 'g5', 'g2',
-                    'g8', 'g4', 'g1', 'temp', 'hum', 'noise']
-
-    param_units = {'p1': '&#181;g/m3', 'p2': '&#181;g/m3', 'g1': 'ppm',
-                   'g7': '&#181;g/m3', 'g9': 'mg/m3', 'g5': '&#181;g/m3',
-                   'g8': '&#181;g/m3', 'temp': '&#x2103;', 'hum': '%',
-                   'g3': '&#181;g/m3', 'g2': 'mg/m3', 'g4': '&#181;g/m3'}
-
-    table = []
-    gases = []
-
-    for x in gas_sequence:
-        if x in gas_avlb:
-            gases.append(x)
-            gas_avlb.remove(x)
-
-    for x in gas_avlb:
-        gases.append(x)
-
-    gases.remove('noise')
-    gases.remove('t')
-
-    table_header = ['Time']
-
-#   =================Table-Header==================
-    for elements in gases:
-        try:
-            table_header.append(
-                str(all_gases[elements]) +
-                '<br>(' + str(param_units[elements]) + ')')
-        except KeyError:
-            table_header.append(str(elements))
-
-#   =====================Table=====================
-    for elements in req.json():
-        temp = []
-
-        temp.append(datetime.fromtimestamp(
-            int(elements['payload']['d']['t'])).strftime('%H:%M %b %d, \'%y'))
-
-        for gas in gases:
-            if gas != 't':
-                temp.append(int(elements['payload']['d'][gas]))
-
-        table.append(temp)
-
-    t = HTML.table(table, header_row=table_header)
-
-    table_name = os.path.join('static', device_id +
-                              '_table_' + str(int(time.time())) + '.html')
-
-    s = style_tag + table_css + jquery_js + header
-
-    if request_type == '0':
-        s += '<p style="font-size:16px">Hourly Average of Last 24 Hours</p>'
-    else:
-        s += '<p style="font-size:16px">Daily Average (24 Hours)</p>'
-
-    s += t + '<script src="colorService.js"></script>' + \
-        '''<div class="float-left margin-top-25 margin-l-3em display-inline">
-        Page ''' + pages + ' out of ' + pages + \
-        '''</div>
-        <div class="display-inline margin-r-3em right-float text-right margin-top-25">
-        Powered by <img src="black-logo.png" class="logo-footer">
-        </div>'''
-
-    f = open(table_name, 'w')
-    f.write(s)
-    f.close()
-    return table_name
-
-
-def html_header(org, name, lte, gte, gases, label, location):
-
-    all_gases = {'p2': 'PM10', 'p3': 'PM1', 'g5': 'O3', 'g4': 'NH3',
-                 'g3': 'NO2', 'g1': 'CO2', 'temp': 'Temperature',
-                 'g6': 'H2S', 'g7': 'NO2', 'hum': 'Humidity',
-                 'lon': 'longitude', 'g9': 'CO', 'g8': 'SO2', 'noise': 'Noise',
-                 'p1': 'PM2.5', 't': 'Time', 'lat': 'latitude', 'g2': 'CO'}
-
->>>>>>> a1cbf20ebeb4950b1c908f9b8266c17280b2799d
     html = '''<div style="display:block; height:92px;">
                 <div class="title-center">
                     <div>
@@ -781,10 +433,6 @@ def html_header(org, name, lte, gte, gases, label, location):
                     </div>
                 </div>
               </div>
-<<<<<<< HEAD
-=======
-
->>>>>>> a1cbf20ebeb4950b1c908f9b8266c17280b2799d
               <div class="full-sec underlined-div">
                 <div class="half-sec">
                     <div class="time-from">
@@ -810,10 +458,7 @@ def html_header(org, name, lte, gte, gases, label, location):
 
 
 def chart_generate(device_id, gas, gas_name, gte, unit, report_type):
-<<<<<<< HEAD
     report_type = str(report_type)
-=======
->>>>>>> a1cbf20ebeb4950b1c908f9b8266c17280b2799d
 
     if report_type == '0':
         chart_payload = {
@@ -841,7 +486,6 @@ def chart_generate(device_id, gas, gas_name, gte, unit, report_type):
                     "text": "( " + unit + " )",
                     "useHTML": True
                 }
-<<<<<<< HEAD
             },
             "plotOptions": {
                 "area": {
@@ -859,25 +503,6 @@ def chart_generate(device_id, gas, gas_name, gte, unit, report_type):
                     "threshold": None
                 }
             },
-=======
-            },
-            "plotOptions": {
-                "area": {
-                    "fillColor": {
-                        "linearGradient": {
-                            "x1": 0,
-                            "y1": 0,
-                            "x2": 0,
-                            "y2": 1
-                        },
-                        "stops": [[0, "#00a8e0"],
-                                  [1, "#FFFFFF"]]
-                    },
-                    "lineWidth": 1,
-                    "threshold": None
-                }
-            },
->>>>>>> a1cbf20ebeb4950b1c908f9b8266c17280b2799d
 
             "legend": False,
             "credits": {"enabled": False},
@@ -889,11 +514,7 @@ def chart_generate(device_id, gas, gas_name, gte, unit, report_type):
                 "pointInterval": 3600 * 1000
             }]}
 
-<<<<<<< HEAD
-    if report_type == '1' or '2':
-=======
     elif report_type == '1' or '2':
->>>>>>> a1cbf20ebeb4950b1c908f9b8266c17280b2799d
         days = [datetime.fromtimestamp(
             int(x)).strftime("%b %d") for x in gte[::-1]]
         chart_payload = {
