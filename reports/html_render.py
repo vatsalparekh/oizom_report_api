@@ -116,7 +116,7 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
             print overview_page, img_lst, chart_page, table_page
             return overview_page, img_lst, chart_page, table_page
 
-    if report_type == '1' or '2':
+    elif report_type == '1' or '2':
 
         try:
             req = requests.get('http://tub.oizom.com/' + user_id +
@@ -277,7 +277,7 @@ def generate_overview(req, report_type, gte, lte, label,
 
         return html_name, img_lst, chart_page, table_page
 
-    if report_type == '1' or '2':
+    elif report_type == '1' or '2':
         temp_gas_data = [x['aqi'] for x in req.json()]
         temp_gas_time = [int(x['payload']['d']['t']) for x in req.json()]
 

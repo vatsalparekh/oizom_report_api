@@ -2,13 +2,27 @@ import os
 import subprocess
 from logs import *
 from PyPDF2 import PdfFileMerger, PdfFileReader
+from datetime import datetime
 
 
-def pdf_generate(html_name, label):
+def pdf_generate(html_name, label, report_type):
 
-    pdf_path = os.path.join('static', 'pdf', label + '_' +
-                            html_name[0].split('_')[-1].split('.')[0] +
-                            '.pdf')
+    name = ['Daily Report', 'Weekly Report',
+            'Monthly Report'][int(report_type)]
+
+    if report_type == '0':
+        fmt = '%d %b, %y'
+    elif report_type == '1':
+        fmt = '%b'
+    elif report_type == '2':
+        fmt = '%B'
+
+    pdf_path = os.path.join('static', 'pdf', name + '_' +
+                            datetime.fromtimestamp(
+                                int(html_name[0].split('_')[-1].split('.')[0]))
+                            .strftime(fmt) +
+                            '_' + label + '_' +
+                            html_name[0].split('_')[-1].split('.')[0] + '.pdf')
 
     pdfs = [os.path.join('static', 'pdf', 'part_' + x.split('/')
                          [1].split('.')[0] + '.pdf') for x in html_name]
