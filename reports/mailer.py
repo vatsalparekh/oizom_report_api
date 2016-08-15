@@ -11,7 +11,7 @@ def send_mail(path, mail_id):
     payload['fromName'] = 'Oizom Support'
     payload['replyTo'] = 'tech@oizom.com'
     payload['replyToName'] = 'Tech @ Oizom'
-    payload['to'] = ';'.join(ids for ids in mail_id)
+    payload['to'] = mail_id
     payload['subject'] = 'Your Air Quality Report has arrived'
     payload['bodyText'] = 'The Air Quality Report is attached'
 
