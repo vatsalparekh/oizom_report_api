@@ -95,6 +95,10 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
                   location, org):
 
     report_type = str(report_type)
+    
+    if lte < gte:
+        lte, gte = gte, lte
+    
     payload = {'lte': lte, 'gte': gte}
 #   sends request to url corresponding to different report_types
     if report_type == '0':
