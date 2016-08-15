@@ -5,7 +5,7 @@
 ```sudo apt-get install python-virtualenv```
 
 ## Steps to install
-1. ```Git clone https://github.com/vatsalparekh/oizom_report_api```
+1. ```git clone https://github.com/vatsalparekh/oizom_report_api```
 2. ```cd oizom_report_api```
 3. ```virtualenv venv```
 4. ```source venv/bin/active```
@@ -39,8 +39,8 @@ POST request to ```/report``` with  following json
         "gte":"1466706600",
         "lte":"1468564595",
         "user_id":"ID",
-        "mail":"client@example.com"
-        "report_type":"1",
+        "mail":"client@example.com",
+        "report_type" : "0",
      },
      {  
         "device_id":"OZ-1",
@@ -48,11 +48,17 @@ POST request to ```/report``` with  following json
         "lte":"1468564595",
         "user_id":"ID-1",
         "mail":"client-1@example.com",
-        "report_type":"1",
+        "report_type" : "1",
      }
   ]
 }
 ```
+0 : Daily Report,
+
+1 : Weekly Report,
+
+2 : Monthly Report
+
 
 #ToDO
 - Jenkins CI/CD

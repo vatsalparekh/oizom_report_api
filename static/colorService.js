@@ -140,7 +140,7 @@ function colorTdAsPerParam(elem, param, val){
 
 function yourFunction() {
     var tables = document.getElementsByTagName("table");
-    var elementsTd = tables[1].getElementsByTagName("td");
+    var elementsTd = tables[0].getElementsByTagName("td");
     var colHeads = document.getElementsByTagName("th");
     var headsCount = colHeads.length;
     var lengthOfArray = elementsTd.length;
@@ -150,9 +150,15 @@ function yourFunction() {
     for(var i=0; i<lengthOfArray; i++){
       var moduleValue = ((i+1)%(headsCount));
       if(moduleValue == 0){
-        colorTdAsPerParam(elementsTd[i], colHeads[headsCount-1].innerHTML, elementsTd[i].innerHTML);
+        var stringArray = colHeads[headsCount-1].innerHTML.split("<");
+        var paramName = stringArray[0];
+        console.log("sending param Name : "+paramName);
+        colorTdAsPerParam(elementsTd[i], paramName, elementsTd[i].innerHTML);
       } else {
-        colorTdAsPerParam(elementsTd[i], colHeads[moduleValue-1].innerHTML, elementsTd[i].innerHTML);
+        var stringArray = colHeads[moduleValue-1].innerHTML.split("<");
+        var paramName = stringArray[0];
+        console.log("sending param Name 2 : "+paramName);
+        colorTdAsPerParam(elementsTd[i], paramName, elementsTd[i].innerHTML);
       }
       
     }      

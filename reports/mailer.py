@@ -11,7 +11,7 @@ def send_mail(path, mail_id):
     payload['fromName'] = 'Oizom Support'
     payload['replyTo'] = 'tech@oizom.com'
     payload['replyToName'] = 'Tech @ Oizom'
-    payload['to'] = mail_id
+    payload['to'] = ';'.join(ids for ids in mail_id)
     payload['subject'] = 'Your Air Quality Report has arrived'
     payload['bodyText'] = 'The Air Quality Report is attached'
 
@@ -22,6 +22,7 @@ def send_mail(path, mail_id):
             'https://api.elasticemail.com/v2/email/send',
             params=payload,
             files=pdf)
+        print mail_req.url
 
     except Exception, e:
         logger.exception("%s", str(e))
