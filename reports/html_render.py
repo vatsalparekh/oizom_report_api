@@ -103,7 +103,6 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
             req = requests.get('http://tub.oizom.com/' + user_id +
                                '/data/range/hours/' + device_id,
                                params=payload)
-            print report_type, req.url
 
         except Exception, e:
             logger.exception("%s", str(e))
@@ -113,7 +112,6 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
             overview_page, img_lst, chart_page, table_page = generate_overview(
                 req, report_type, gte, lte, label, location, org, device_id)
 
-            print overview_page, img_lst, chart_page, table_page
             return overview_page, img_lst, chart_page, table_page
 
     elif report_type == '1' or '2':
@@ -122,7 +120,6 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
             req = requests.get('http://tub.oizom.com/' + user_id +
                                '/data/range/days/' + device_id,
                                params=payload)
-            print report_type, req.url
 
         except Exception, e:
             logger.exception("%s", str(e))
@@ -132,7 +129,6 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
             overview_page, img_lst, chart_page, table_page = generate_overview(
                 req, report_type, gte, lte, label, location, org, device_id)
 
-            print overview_page, img_lst, chart_page, table_page
             return overview_page, img_lst, chart_page, table_page
 
 
@@ -147,7 +143,7 @@ def generate_overview(req, report_type, gte, lte, label,
                  'lon': 'longitude', 'g9': 'CO', 'g8': 'SO2', 'noise': 'Noise',
                  'p1': 'PM2.5', 't': 'Time', 'lat': 'latitude', 'g2': 'CO'}
 
-    gas_sequence = ['p1', 'p2', 'g3', 'g5', 'g2',
+    gas_sequence = ['p1', 'p2', 'g3', 'g5', 'g2', 'g7',
                     'g8', 'g4', 'g1', 'temp', 'hum', 'noise']
 
     param_units = {'p1': '&#181;g/m3', 'p2': '&#181;g/m3', 'g1': 'ppm',
@@ -170,7 +166,7 @@ def generate_overview(req, report_type, gte, lte, label,
     else:
         pages = '3'
 
-    avg_aqi = avg_list([int(x['aqi']) for x in req.json()])
+    avg_aqi = avg_list([int(float(x['aqi'])) for x in req.json()])
 
     avg_gas = []
     min_gas = []
@@ -182,7 +178,7 @@ def generate_overview(req, report_type, gte, lte, label,
 
     for gas in only_gases:
 
-        all_values = [(int(x['payload']['d'][gas]),
+        all_values = [(int(float(x['payload']['d'][gas])),
                        int(x['payload']['d']['t']))
                       for x in req.json()]
 
@@ -193,7 +189,7 @@ def generate_overview(req, report_type, gte, lte, label,
 
         avg_gas.append(avg_list([x[0] for x in all_values]))
 
-        max_gas.append(int(max(all_values)[0]))
+        max_gas.append(int(float(max(all_values)[0])))
         max_gas_timestamp.append((
             datetime.fromtimestamp(
                 max(all_values)[1] - 3600).strftime('%H:%M') +
@@ -202,7 +198,7 @@ def generate_overview(req, report_type, gte, lte, label,
             datetime.fromtimestamp(max(all_values)[1])
             .strftime('%b %d, \'%y')))
 
-        min_gas.append(int(min(all_values)[0]))
+        min_gas.append(int(float(min(all_values)[0])))
         min_gas_timestamp.append((
             datetime.fromtimestamp(
                 min(all_values)[1] - 3600).strftime('%H:%M') +
@@ -211,11 +207,11 @@ def generate_overview(req, report_type, gte, lte, label,
             datetime.fromtimestamp(min(all_values)[1])
             .strftime('%b %d, \'%y')))
 
-    avg_tempr = str(int(avg_list([x['payload']['d']['temp']
-                                  for x in req.json()]))) + '&#x2103;'
+    avg_tempr = str(int(float(avg_list([x['payload']['d']['temp']
+                                        for x in req.json()])))) + '&#x2103;'
 
-    avg_hum = str(int(avg_list([x['payload']['d']['hum']
-                                for x in req.json()]))) + '%'
+    avg_hum = str(int(float(avg_list([x['payload']['d']['hum']
+                                      for x in req.json()])))) + '%'
 
     table = [['Average (24 Hours)'] + avg_gas] + \
         [['Maximum'] + max_gas] + \
@@ -358,8 +354,8 @@ def generate_table(req, device_id, header, request_type, pages):
                  'lon': 'longitude', 'g9': 'CO', 'g8': 'SO2', 'noise': 'Noise',
                  'p1': 'PM2.5', 't': 'Time', 'lat': 'latitude', 'g2': 'CO'}
 
-    gas_sequence = ['p1', 'p2', 'g3', 'g5', 'g2',
-                    'g8', 'g4', 'g1', 'temp', 'hum', 'noise']
+    gas_sequence = ['p1', 'p2', 'g3', 'g5', 'g2', 'g7',
+                    'g8', 'g4', 'g1', 'temp', 'hum']
 
     param_units = {'p1': '&#181;g/m3', 'p2': '&#181;g/m3', 'g1': 'ppm',
                    'g7': '&#181;g/m3', 'g9': 'mg/m3', 'g5': '&#181;g/m3',
@@ -372,13 +368,6 @@ def generate_table(req, device_id, header, request_type, pages):
     for x in gas_sequence:
         if x in gas_avlb:
             gases.append(x)
-            gas_avlb.remove(x)
-
-    for x in gas_avlb:
-        gases.append(x)
-
-    gases.remove('noise')
-    gases.remove('t')
 
     table_header = ['Time']
 
@@ -400,7 +389,7 @@ def generate_table(req, device_id, header, request_type, pages):
 
         for gas in gases:
             if gas != 't':
-                temp.append(int(elements['payload']['d'][gas]))
+                temp.append(int(float(elements['payload']['d'][gas])))
 
         table.append(temp)
 

@@ -18,10 +18,7 @@ def pdf_generate(html_name, label, report_type):
         fmt = '%B'
 
     pdf_path = os.path.join('static', 'pdf', name + '_' +
-                            datetime.fromtimestamp(
-                                int(html_name[0].split('_')[-1].split('.')[0]))
-                            .strftime(fmt) +
-                            '_' + label + '_' +
+                            label + '_' +
                             html_name[0].split('_')[-1].split('.')[0] + '.pdf')
 
     pdfs = [os.path.join('static', 'pdf', 'part_' + x.split('/')
