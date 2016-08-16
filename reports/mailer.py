@@ -23,7 +23,7 @@ def send_mail(path, mail_id):
             params=payload,
             files=pdf)
         print mail_req.url
-
+#       sends a request to generate and send mail to mail ids
     except Exception, e:
         logger.exception("%s", str(e))
 
