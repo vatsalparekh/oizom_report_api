@@ -59,6 +59,9 @@ POST request to ```/report``` with  following json
 
 2 : Monthly Report
 
+> Notes
+-Org name is currently statically set
+
 
 #ToDO
 - Jenkins CI/CD
