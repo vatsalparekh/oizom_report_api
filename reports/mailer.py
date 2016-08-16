@@ -28,5 +28,8 @@ def send_mail(path, mail_id):
         logger.exception("%s", str(e))
 
     if (mail_req.status_code == 200):
-        logger.info('Mail Sent! mail_id is %s', mail_id)
-        return
+        if mail_req.json()["success"]:
+            logger.info('Mail Sent! mail_id is %s', mail_id)
+            return
+        else:
+            print mail_req.json()

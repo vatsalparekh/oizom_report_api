@@ -9,7 +9,7 @@ import requests
 
 @celery.task
 def send_report(user_id, device_id, gte, lte, mail_id, report_type,
-                org='AMC (Ahmedabad Municipal Corporation)'):
+                org='Chandigarh Pollution Control Committee (CPCC)'):
 
     try:
         req = requests.get('http://tub.oizom.com/' +
@@ -32,20 +32,19 @@ def send_report(user_id, device_id, gte, lte, mail_id, report_type,
 
         send_mail(pdf_name, mail_id)
 
-#        delete_static(html_name, pdf_name, send_mail)
-#
-#        logger.info('Done! label: %s mail_id: %s', label, mail_id)
+        delete_static(pdf_list + img_lst + [pdf_name])
+
+        logger.info('Done! label: %s mail_id: %s', label, mail_id)
 
     except Exception, e:
         print str(e)
 
 
-def delete_static(html_name, img, pdf_name):
+def delete_static(lst):
 
     try:
-        subprocess.call(['rm', html_name])
-        subprocess.call(['rm', 'static/chart_imgs/' + img])
-        subprocess.call(['rm', pdf_name])
+        for elements in lst:
+            subprocess.call(['rm', elements])
 
     except Exception, e:
         logger.exception("%s", str(e))
