@@ -15,12 +15,12 @@ def get_all_request(request):
     for items in received_data['reports']:
 
         try:
-            tasks.send_report.delay(items['user_id'],
-                                    items['device_id'],
+            tasks.send_report.delay(items['userId'],
+                                    items['deviceId'],
                                     items['gte'],
                                     items['lte'],
                                     items['mail'],
-                                    items['report_type'],
+                                    items['reportType'],
                                     items['org']
                                     )
             print 'Sent to task!'
