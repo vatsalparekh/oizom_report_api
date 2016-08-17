@@ -152,9 +152,7 @@ def generate_overview(req, report_type, gte, lte, label,
     req = []
     # try:
 # for elements in temp:
-# print elements
 # for keys in correction_factor.keys():
-# print keys
 # if keys == 't':
 # elements['payload']['d'][keys] = int(
 # elements['payload']['d'][keys]) + \
@@ -165,7 +163,6 @@ def generate_overview(req, report_type, gte, lte, label,
 # elements['payload']['d'][keys]), 2) * correction_factor[keys]
 # except KeyError:
 # continue
-# print elements
 
 # except Exception, e:
 # print str(e)
@@ -205,7 +202,6 @@ def generate_overview(req, report_type, gte, lte, label,
         pages = '3'
 
     avg_aqi = round(avg_list([round(float(x['aqi']), 2) for x in req]), 2)
-    print '1'
 
     avg_gas = []
     min_gas = []
@@ -408,7 +404,7 @@ def generate_table(req, device_id, header, request_type, pages):
     for x in gas_sequence:
         if x in gas_avlb:
             gases.append(x)
-    print '2'
+
     table_header = ['Time']
 
 #   =================Table-Header==================
@@ -419,7 +415,7 @@ def generate_table(req, device_id, header, request_type, pages):
                 '<br><p style="font-size:12px">(' + str(param_units[elements]) + ')</p>')
         except KeyError:
             table_header.append(str(elements))
-    print '2'
+
 #   =====================Table=====================
     for elements in req:
         temp = []
@@ -427,16 +423,11 @@ def generate_table(req, device_id, header, request_type, pages):
         temp.append(datetime.fromtimestamp(
             int(elements['payload']['d']['t'])).strftime('%H:%M %b %d, \'%y'))
 
-        print '3'
-
         for gas in gases:
             if gas != 't':
-                print elements['payload']['d'][gas]
                 temp.append(round(float(elements['payload']['d'][gas]), 2))
 
         table.append(temp)
-
-    print '4'
 
     t = HTML.table(table, header_row=table_header,
                    col_width=['30px'] + ['15px' for x in table_header[:-1]],
