@@ -9,7 +9,7 @@ import requests
 
 @celery.task
 def send_report(user_id, device_id, gte, lte, mail_id, report_type,
-                org='Chandigarh Pollution Control Committee (CPCC)'):
+                org):
 
     try:
         req = requests.get('http://tub.oizom.com/' +

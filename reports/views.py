@@ -20,7 +20,8 @@ def get_all_request(request):
                                     items['gte'],
                                     items['lte'],
                                     items['mail'],
-                                    items['report_type']
+                                    items['report_type'],
+                                    items['org']
                                     )
             print 'Sent to task!'
 
