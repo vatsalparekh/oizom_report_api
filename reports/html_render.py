@@ -138,34 +138,36 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
 def generate_overview(req, report_type, gte, lte, label,
                       location, org, device_id):
 
-    # correction_factor = {
+    correction_factor = {
         # 'p1': 2,
         # 'p2': 2,
         # 'g5': 0.162,
         # 'g6': 0.00134,
         # 'g7': 1.87,
         # 'g8': 0.52,
-        # 't': 19800
-    # }
+        't': 19800
+    }
     #
     temp = req.json()
     req = []
-    # try:
-# for elements in temp:
-# for keys in correction_factor.keys():
-# if keys == 't':
-# elements['payload']['d'][keys] = int(
-# elements['payload']['d'][keys]) + \
-# correction_factor[keys]
-# else:
-# try:
-# elements['payload']['d'][keys] = round(float(
-# elements['payload']['d'][keys]), 2) * correction_factor[keys]
-# except KeyError:
-# continue
+    try:
+        for elements in temp:
+            for keys in correction_factor.keys():
 
-# except Exception, e:
-# print str(e)
+                if keys == 't':
+                    elements['payload']['d'][keys] = int(
+                        elements['payload']['d'][keys]) + \
+                        correction_factor[keys]
+
+                else:
+                    try:
+                        elements['payload']['d'][keys] = round(float(
+                            elements['payload']['d'][keys]), 2) * correction_factor[keys]
+                    except KeyError:
+                        continue
+
+    except Exception, e:
+        print str(e)
 
     req = temp
 
