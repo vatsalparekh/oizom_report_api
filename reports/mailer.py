@@ -3,7 +3,7 @@ from logs import *
 from datetime import datetime
 
 
-def send_mail(path, mail_id, gte, lte, report_type):
+def send_mail(path, mail_id, gte, lte, label, report_type):
 
     payload = {}
 
@@ -13,7 +13,8 @@ def send_mail(path, mail_id, gte, lte, report_type):
     payload['replyTo'] = 'hello@oizom.com'
     payload['replyToName'] = 'Hello@Oizom'
     payload['to'] = mail_id
-    payload['subject'] = report_type + ' Air Quality Report : ' + \
+    payload['subject'] = report_type + ' Air Quality Report for ' + label + \
+        ' : ' + \
         datetime.fromtimestamp(time.time()).strftime('%d-%b-%y')
     payload['bodyText'] = '''
     Hey,
