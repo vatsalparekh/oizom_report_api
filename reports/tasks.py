@@ -32,7 +32,7 @@ def send_report(user_id, device_id, gte, lte, mail_id, report_type,
 
         send_mail(pdf_name, mail_id)
 
-#        delete_static(pdf_list + img_lst + [pdf_name])
+        delete_static(pdf_list + img_lst + [pdf_name])
 
         logger.info('Done! label: %s mail_id: %s', label, mail_id)
 
