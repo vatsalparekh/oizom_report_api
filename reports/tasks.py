@@ -30,7 +30,8 @@ def send_report(user_id, device_id, gte, lte, mail_id, report_type,
         pdf_list.append(table_page)
         pdf_name = pdf_generate(pdf_list, label, report_type)
 
-        send_mail(pdf_name, mail_id)
+        send_mail(pdf_name, mail_id, gte, lte, [
+                  'Daily', 'Weekly', 'Monthly'][int(report_type)])
 
         delete_static(pdf_list + img_lst + [pdf_name])
 

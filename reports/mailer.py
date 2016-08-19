@@ -1,20 +1,41 @@
 import requests
 from logs import *
+from datetime import datetime
 
 
-def send_mail(path, mail_id):
+def send_mail(path, mail_id, gte, lte, report_type):
 
     payload = {}
 
     payload['apikey'] = 'c01b8dad-4773-4cec-bcd0-8113ce7d0a66'
     payload['from'] = 'support@oizom.com'
     payload['fromName'] = 'Oizom Support'
-    payload['replyTo'] = 'tech@oizom.com'
-    payload['replyToName'] = 'Tech @ Oizom'
+    payload['replyTo'] = 'hello@oizom.com'
+    payload['replyToName'] = 'Hello@Oizom'
     payload['to'] = mail_id
-    payload['subject'] = 'Your Air Quality Report has arrived'
-    payload['bodyText'] = 'The Air Quality Report is attached'
+    payload['subject'] = report_type + ' Air Quality Report : ' + \
+        datetime.fromtimestamp(time.time()).strftime('%d-%b-%y')
+    payload['bodyText'] = '''
+    Hey,
+    Please find attached ''' + report_type + ''' report for your devices.
 
+
+    Report Date: ''' + datetime.fromtimestamp(
+        time.time()).strftime('%d-%B-%Y') + \
+        '''.
+    Report Data: ''' + time.ctime(int(gte) + 19800) + \
+        ' to ' + time.ctime(int(lte) + 19800) + \
+        '''
+
+
+    Please note:
+    If you face any issues you can drop a mail to hello@oizom.com .
+
+    Regards,
+
+    Vrushank Vyas
+    Oizom Instruments Private Limited
+    '''
     pdf = {'attachmentFiles': open(path, 'rb')}
 
     try:
