@@ -9,7 +9,7 @@ import requests
 
 @celery.task
 def send_report(user_id, device_id, gte, lte, mail_id, report_type,
-                org='AMC (Ahmedabad Municipal Corporation)'):
+                org):
 
     try:
         req = requests.get('http://tub.oizom.com/' +
@@ -23,32 +23,39 @@ def send_report(user_id, device_id, gte, lte, mail_id, report_type,
     try:
         html_name, img_lst, chart_page, table_page = html_generate(
             user_id, device_id, gte, lte, report_type, label, location, org)
-#       obtains html of every page in pdf 
+
+        logger.info("HTML: %s, IMG: %s, CHART: %s, TABLE:%s",
+                    html_name, img_lst, chart_page, table_page)
+
+#       obtains html of every page in pdf
         pdf_list = [html_name]
 #       creates list pdf_list and inserts html_name, i.e. first page of pdf
+
         for x in chart_page:
             pdf_list.append(x)
 #       appends graph img pages to the pdf_list
         pdf_list.append(table_page)
-#       appends last page to pdf
+
+        logger.info("PDF: %s", pdf_list)
+
         pdf_name = pdf_generate(pdf_list, label, report_type)
 #       generates pdf of all the html pages using pdf_generate()
-        send_mail(pdf_name, mail_id)
+
+        send_mail(pdf_name, mail_id, gte, lte, label, [
+                  'Daily', 'Weekly', 'Monthly'][int(report_type)])
 #       sends mail to the user
-#        delete_static(html_name, pdf_name, send_mail)
-#
-#        logger.info('Done! label: %s mail_id: %s', label, mail_id)
+        delete_static(pdf_list + img_lst + [pdf_name])
+
+        logger.info('Done! label: %s mail_id: %s', label, mail_id)
 
     except Exception, e:
         logger.exception("%s", str(e))
 
 
-def delete_static(html_name, img, pdf_name):
-
+def delete_static(lst):
     try:
-        subprocess.call(['rm', html_name])
-        subprocess.call(['rm', 'static/chart_imgs/' + img])
-        subprocess.call(['rm', pdf_name])
+        for elements in lst:
+            subprocess.call(['rm', elements])
 
     except Exception, e:
         logger.exception("%s", str(e))
