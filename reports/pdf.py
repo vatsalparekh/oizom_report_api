@@ -40,4 +40,4 @@ def pdf_generate(html_name, label, report_type):
 
     merger.write(pdf_path)
 
-    return pdf_path
+    return pdf_path, pdfs

@@ -28,12 +28,14 @@ def send_report(user_id, device_id, gte, lte, mail_id, report_type,
         for x in chart_page:
             pdf_list.append(x)
         pdf_list.append(table_page)
-        pdf_name = pdf_generate(pdf_list, label, report_type)
+        pdf_name, pdfs = pdf_generate(pdf_list, label, report_type)
 
         send_mail(pdf_name, mail_id, gte, lte, label, [
                   'Daily', 'Weekly', 'Monthly'][int(report_type)])
 
-        delete_static(pdf_list + img_lst + [pdf_name])
+        img_list = ['static/chart_imgs/' + str(img) for img in img_lst]
+
+        delete_static(pdf_list + img_list + [pdf_name] + pdfs)
 
         logger.info('Done! label: %s mail_id: %s', label, mail_id)
 
@@ -42,6 +44,8 @@ def send_report(user_id, device_id, gte, lte, mail_id, report_type,
 
 
 def delete_static(lst):
+
+    print lst
 
     try:
         for elements in lst:
