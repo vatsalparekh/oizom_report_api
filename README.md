@@ -35,20 +35,22 @@ POST request to ```/report``` with  following json
   "reports":
   [  
      {  
-        "device_id":"OZ",
+        "deviceId":"OZ",
         "gte":"1466706600",
         "lte":"1468564595",
-        "user_id":"ID",
+        "userId":"ID",
         "mail":"client@example.com",
-        "report_type" : "0",
+        "reportType" : "0",
+        "org" : "AMC"
      },
      {  
-        "device_id":"OZ-1",
+        "deviceId":"OZ-1",
         "gte":"1469018206",
         "lte":"1468564595",
-        "user_id":"ID-1",
+        "userId":"ID-1",
         "mail":"client-1@example.com",
-        "report_type" : "1",
+        "reportType" : "1",
+        "org" : "CPCB"
      }
   ]
 }
@@ -58,10 +60,6 @@ POST request to ```/report``` with  following json
 1 : Weekly Report,
 
 2 : Monthly Report
-
-> Notes
--Org name is currently statically set
-
 
 #ToDO
 - Jenkins CI/CD
