@@ -27,7 +27,7 @@ if from ```root``` user then on cli -> ```export C_FORCE_ROOT="true"```
 Bazinga!!!
 
 ## API Guidelines
-POST request to ```ip-or-domain:port/report``` with  following json
+POST request to ```http://ip-or-domain:port/report``` with  following json
 
 
 ```json
