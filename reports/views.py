@@ -14,6 +14,8 @@ def get_all_request(request):
 
     for items in received_data['reports']:
 
+        logger.info("ITEM: %s", items)
+
         try:
             tasks.send_report.delay(items['userId'],
                                     items['deviceId'],
