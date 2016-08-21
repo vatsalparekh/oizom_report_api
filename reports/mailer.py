@@ -40,16 +40,19 @@ def send_mail(path, mail_id, gte, lte, label, report_type):
     pdf = {'attachmentFiles': open(path, 'rb')}
 
     try:
+        # sends a request to generate and send mail to mail ids
         mail_req = requests.post(
             'https://api.elasticemail.com/v2/email/send',
             params=payload,
             files=pdf)
         print mail_req.url
+        logger.info("MAIL_REQ_URL: %s", mail_req.url)
 
     except Exception, e:
         logger.exception("%s", str(e))
 
     if (mail_req.status_code == 200):
+        logger.info("%s", mail_req.json())
         if mail_req.json()["success"]:
             logger.info('Mail Sent! mail_id is %s', mail_id)
             return

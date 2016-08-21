@@ -11,6 +11,7 @@ import requests
 def send_report(user_id, device_id, gte, lte, mail_id, report_type,
                 org):
 
+    #   generates label and location of the user
     try:
         req = requests.get('http://tub.oizom.com/' +
                            user_id + '/devices/' + device_id)
@@ -24,12 +25,26 @@ def send_report(user_id, device_id, gte, lte, mail_id, report_type,
         html_name, img_lst, chart_page, table_page = html_generate(
             user_id, device_id, gte, lte, report_type, label, location, org)
 
+        logger.info("HTML: %s,\n IMG: %s,\n CHART: %s,\n TABLE:%s",
+                    html_name, img_lst, chart_page, table_page)
+
+#   obtains html of every page in pdf
+
         pdf_list = [html_name]
+#   creates list pdf_list and inserts html_name, i.e. first page of pdf
+
         for x in chart_page:
             pdf_list.append(x)
+
+#   appends graph img pages to the pdf_list
         pdf_list.append(table_page)
+
+        logger.info("PDF: %s", pdf_list)
+
+#   generates pdf of all the html pages using pdf_generate()
         pdf_name, pdfs = pdf_generate(pdf_list, label, report_type)
 
+#   sends mail to mail_id
         send_mail(pdf_name, mail_id, gte, lte, label, [
                   'Daily', 'Weekly', 'Monthly'][int(report_type)])
 
@@ -40,7 +55,7 @@ def send_report(user_id, device_id, gte, lte, mail_id, report_type,
         logger.info('Done! label: %s mail_id: %s', label, mail_id)
 
     except Exception, e:
-        print str(e)
+        logger.exception("%s", str(e))
 
 
 def delete_static(lst):
@@ -49,6 +64,7 @@ def delete_static(lst):
 
     try:
         for elements in lst:
+            logger.info("ELEMENT: %s", elements)
             subprocess.call(['rm', elements])
 
     except Exception, e:
