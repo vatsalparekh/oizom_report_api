@@ -44,9 +44,10 @@ def send_mail(path, mail_id, gte, lte, label, report_type):
             'https://api.elasticemail.com/v2/email/send',
             params=payload,
             files=pdf)
+#       sends a request to generate and send mail to mail ids
+
         print mail_req.url
         logger.info("MAIL_REQ_URL: %s",mail_req.url)
-#       sends a request to generate and send mail to mail ids
     except Exception, e:
         logger.exception("%s", str(e))
 

@@ -4,7 +4,6 @@ from logs import *
 from PyPDF2 import PdfFileMerger, PdfFileReader
 from datetime import datetime
 
-
 def pdf_generate(html_name, label, report_type):
 
     name = ['Daily Report', 'Weekly Report',
@@ -39,5 +38,4 @@ def pdf_generate(html_name, label, report_type):
         merger.append(PdfFileReader(file(files, 'rb')))
 #   merges all the pdf page formed
     merger.write(pdf_path)
-
-    return pdf_path
+    return pdf_path,pdfs

@@ -24,7 +24,7 @@ def send_report(user_id, device_id, gte, lte, mail_id, report_type,
         html_name, img_lst, chart_page, table_page = html_generate(
             user_id, device_id, gte, lte, report_type, label, location, org)
 
-        logger.info("HTML: %s, IMG: %s, CHART: %s, TABLE:%s",
+        logger.info("HTML: %s,\n IMG: %s,\n CHART: %s,\n TABLE:%s",
                     html_name, img_lst, chart_page, table_page)
 
 #       obtains html of every page in pdf
@@ -38,13 +38,16 @@ def send_report(user_id, device_id, gte, lte, mail_id, report_type,
 
         logger.info("PDF: %s", pdf_list)
 
-        pdf_name = pdf_generate(pdf_list, label, report_type)
+        pdf_name,pdfs = pdf_generate(pdf_list, label, report_type)
 #       generates pdf of all the html pages using pdf_generate()
 
         send_mail(pdf_name, mail_id, gte, lte, label, [
                   'Daily', 'Weekly', 'Monthly'][int(report_type)])
 #       sends mail to the user
-        delete_static(pdf_list + img_lst + [pdf_name])
+
+        img_lst = ['static/chart_imgs/' + str(img) for img in img_lst]
+
+        delete_static(pdf_list + img_lst + [pdf_name]+pdfs)
 
         logger.info('Done! label: %s mail_id: %s', label, mail_id)
 
@@ -55,7 +58,7 @@ def send_report(user_id, device_id, gte, lte, mail_id, report_type,
 def delete_static(lst):
     try:
         for elements in lst:
+            logger.info("ELEMENT: %s", elements)
             subprocess.call(['rm', elements])
-
     except Exception, e:
         logger.exception("%s", str(e))
