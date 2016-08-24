@@ -244,11 +244,17 @@ def generate_overview(req, report_type, gte, lte, label,
             datetime.fromtimestamp(min(all_values)[1])
             .strftime('%b %d, \'%y')))
 
-    avg_tempr = str(round(float(avg_list([x['payload']['d']['temp']
-                                          for x in req])), 2)) + '&#x2103;'
+    try:
+        avg_tempr = str(round(float(avg_list([x['payload']['d']['temp']
+                                              for x in req])), 2)) + '&#x2103;'
+    except KeyError:
+        avg_tempr = 'Not Found'
 
-    avg_hum = str(round(float(avg_list([x['payload']['d']['hum']
-                                        for x in req])), 2)) + '%'
+    try:
+        avg_hum = str(round(float(avg_list([x['payload']['d']['hum']
+                                            for x in req])), 2)) + '%'
+    except KeyError:
+        avg_hum = 'Not Found'
 
     table = [['Average'] + avg_gas] + \
         [['Maximum'] + max_gas] + \
