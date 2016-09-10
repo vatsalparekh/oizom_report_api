@@ -433,7 +433,10 @@ def generate_table(req, device_id, header, request_type, pages):
 
         for gas in gases:
             if gas != 't':
-                temp.append(round(float(elements['payload']['d'][gas]), 2))
+            	if(round(float(elements['payload']['d'][gas]), 2)==0):
+            		temp.append("0.0")
+                else:
+                	temp.append(round(float(elements['payload']['d'][gas]), 2))
 
         table.append(temp)
 
