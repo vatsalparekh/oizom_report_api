@@ -603,7 +603,7 @@ def chart_generate(device_id, gas, gas_name, gte, unit, report_type):
     data = json.dumps(chart_payload)
 
     try:
-        req = requests.post('http://app.oizom.com:4932/', data=data)
+        req = requests.post('http://localhost:4932/', data=data)
 
     except Exception, e:
         logger.exception(str(e))
