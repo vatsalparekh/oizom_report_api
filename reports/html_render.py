@@ -97,6 +97,9 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
     report_type = str(report_type)
     payload = {'lte': lte, 'gte': gte}
 
+    lte = int(float(lte))
+    gte = int(float(gte))
+
     lte += 19800
     gte += 19800
 
