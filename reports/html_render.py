@@ -104,8 +104,7 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
 
         try:
             req = requests.get('http://api.oizom.com/' + user_id +
-                               '/data/range/hours/' + device_id,
-                               params=payload,
+                               '/data/hours/24/' + device_id,
                                headers={'air-quality-india-app': 'no-auth'})
             logger.info(req.json())
 
@@ -120,10 +119,10 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
             return overview_page, img_lst, chart_page, table_page
 
     elif report_type == '1' or '2':
-
+        # @Jim
         try:
             req = requests.get('http://api.oizom.com/' + user_id +
-                               '/data/range/days/' + device_id,
+                               '/data/days/7' + device_id,
                                params=payload,
                                headers={'air-quality-india-app': 'no-auth'})
             logger.info(req.json())
