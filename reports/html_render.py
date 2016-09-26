@@ -103,9 +103,10 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
     if report_type == '0':
 
         try:
-            req = requests.get('http://tub.oizom.com/' + user_id +
+            req = requests.get('http://api.oizom.com/' + user_id +
                                '/data/range/hours/' + device_id,
-                               params=payload)
+                               params=payload,
+                               header={'air-quality-india-app': 'no-auth'})
 
         except Exception, e:
             logger.exception("%s", str(e))
@@ -120,9 +121,10 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
     elif report_type == '1' or '2':
 
         try:
-            req = requests.get('http://tub.oizom.com/' + user_id +
+            req = requests.get('http://api.oizom.com/' + user_id +
                                '/data/range/days/' + device_id,
-                               params=payload)
+                               params=payload,
+                               header={'air-quality-india-app': 'no-auth'})
 
         except Exception, e:
             logger.exception("%s", str(e))
@@ -433,10 +435,10 @@ def generate_table(req, device_id, header, request_type, pages):
 
         for gas in gases:
             if gas != 't':
-            	if(round(float(elements['payload']['d'][gas]), 2)==0):
-            		temp.append("0.0")
+                if(round(float(elements['payload']['d'][gas]), 2) == 0):
+                    temp.append("0.0")
                 else:
-                	temp.append(round(float(elements['payload']['d'][gas]), 2))
+                    temp.append(round(float(elements['payload']['d'][gas]), 2))
 
         table.append(temp)
 

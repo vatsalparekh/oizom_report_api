@@ -13,8 +13,9 @@ def send_report(user_id, device_id, gte, lte, mail_id, report_type,
 
     #   generates label and location of the user
     try:
-        req = requests.get('http://tub.oizom.com/' +
-                           user_id + '/devices/' + device_id)
+        req = requests.get('http://api.oizom.com/' +
+                           user_id + '/devices/' + device_id,
+                           header={'air-quality-india-app': 'no-auth'})
     except Exception, e:
         logger.exception('%s', str(e))
 
