@@ -106,7 +106,7 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
             req = requests.get('http://api.oizom.com/' + user_id +
                                '/data/range/hours/' + device_id,
                                params=payload,
-                               header={'air-quality-india-app': 'no-auth'})
+                               headers={'air-quality-india-app': 'no-auth'})
 
         except Exception, e:
             logger.exception("%s", str(e))
@@ -124,7 +124,7 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
             req = requests.get('http://api.oizom.com/' + user_id +
                                '/data/range/days/' + device_id,
                                params=payload,
-                               header={'air-quality-india-app': 'no-auth'})
+                               headers={'air-quality-india-app': 'no-auth'})
 
         except Exception, e:
             logger.exception("%s", str(e))

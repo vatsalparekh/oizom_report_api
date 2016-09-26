@@ -15,7 +15,7 @@ def send_report(user_id, device_id, gte, lte, mail_id, report_type,
     try:
         req = requests.get('http://api.oizom.com/' +
                            user_id + '/devices/' + device_id,
-                           header={'air-quality-india-app': 'no-auth'})
+                           headers={'air-quality-india-app': 'no-auth'})
     except Exception, e:
         logger.exception('%s', str(e))
 
