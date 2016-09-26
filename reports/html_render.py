@@ -107,6 +107,7 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
                                '/data/range/hours/' + device_id,
                                params=payload,
                                headers={'air-quality-india-app': 'no-auth'})
+            logger.info(req.json())
 
         except Exception, e:
             logger.exception("%s", str(e))
@@ -125,6 +126,7 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
                                '/data/range/days/' + device_id,
                                params=payload,
                                headers={'air-quality-india-app': 'no-auth'})
+            logger.info(req.json())
 
         except Exception, e:
             logger.exception("%s", str(e))
