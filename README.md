@@ -9,7 +9,8 @@
 2. ```cd oizom_report_api```
 3. ```virtualenv venv```
 4. ```source venv/bin/active```
-5. ```sudo apt-get install python-pip wkhtmltopdf rabbitmq-server xvfb```
+5. ```sudo apt-get install python-pip wkhtmltopdf rabbitmq-server ```
+> must install [patched version of wkhtmltopdf](https://gist.github.com/vatsalparekh/92c4f58386aec47b971fef2c1b61eb4f)
 6. ```pip install -r requirements.txt```
 7. ```cd modules/HTML.py-0.04 ``` -> ```python setup.py install```
 
