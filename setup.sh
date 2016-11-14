@@ -1,6 +1,6 @@
 sudo apt-get update;
 sudo apt-get -y upgrade;
-sudo apt-get -y install htop wkhtmltopdf python-pip rabbitmq-server git;
+sudo apt-get -y install htop wkhtmltopdf python-pip rabbitmq-server git xvfb;
 cd modules/HTML.py-0.04/;
 python setup.py install;
 cd ..; cd ..;
