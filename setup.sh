@@ -11,3 +11,5 @@ cp wkhtmltox/bin/wkhtmltopdf /usr/bin/;
 wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2;
 tar xf phantomjs-2.1.1-linux-x86_64.tar.bz2;
 cp phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin;
+git clone http://github.com/vatsalparekh/highcharts-png-renderer;
+phantomjs highcharts-png-renderer/run.js &
