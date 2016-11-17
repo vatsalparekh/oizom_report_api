@@ -13,7 +13,7 @@ def send_mail(path, mail_id, gte, lte, label, report_type):
     payload['replyTo'] = 'hello@oizom.com'
     payload['replyToName'] = 'Hello@Oizom'
     payload['to'] = mail_id
-    payload['subject'] = report_type + ' Air Quality Report for ' + label + \
+    payload['subject'] = report_type + ' AirQuality Report for ' + label + \
         ' : ' + \
         datetime.fromtimestamp(time.time()).strftime('%d-%b-%y')
     payload['bodyText'] = '''
