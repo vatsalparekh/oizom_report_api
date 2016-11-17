@@ -127,7 +127,7 @@ def html_generate(user_id, device_id, gte, lte, report_type, label,
         # @Jim
         try:
             req = requests.get('http://api.oizom.com/' + user_id +
-                               '/data/days/7/' + device_id,
+                               '/data/range/daily/' + device_id,
                                params=payload,
                                headers={'air-quality-india-app': 'no-auth'})
             print req.url
