@@ -4,4 +4,24 @@ djangorestframework == 3.4.0
 celery == 3.1.25
 django_celery == 3.1.17
 PyPDF2
-django-supervisor
+django-supervisoramqp==1.4.9
+anyjson==0.3.3
+argh==0.26.2
+billiard==3.3.0.23
+celery==3.1.25
+Django==1.9.8
+django-celery==3.1.17
+django-queryset-csv==1.0.0
+django-supervisor==0.4.0
+djangorestframework==3.4.0
+HTML.py==0.4
+kombu==3.0.37
+meld3==1.0.2
+pathtools==0.1.2
+PyPDF2==1.26.0
+pytz==2016.10
+PyYAML==3.12
+requests==2.12.3
+supervisor==3.3.1
+unicodecsv==0.14.1
+watchdog==0.8.3

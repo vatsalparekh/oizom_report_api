@@ -20,4 +20,5 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^report', include('reports.urls')),
+    url(r'^csv/', include('csv_app.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

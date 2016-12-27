@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'djcelery',
-    'djsupervisor'
+    'djsupervisor',
+    'csv_app',
 ]
 
 MIDDLEWARE_CLASSES = [
