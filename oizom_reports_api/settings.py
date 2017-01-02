@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'djcelery',
     'djsupervisor',
     'csv_app',
+    'scrapper'
 ]
 
 MIDDLEWARE_CLASSES = [

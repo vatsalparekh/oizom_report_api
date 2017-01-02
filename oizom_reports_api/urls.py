@@ -20,5 +20,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^report', include('reports.urls')),
-    url(r'^csv/', include('csv_app.urls'))
+    url(r'^csv/', include('csv_app.urls')),
+    url(r'^scrap/', include('scrapper.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
