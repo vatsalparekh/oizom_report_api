@@ -24,20 +24,24 @@ def scrap():
             _type = each['type']
             _lat = each['latitude']
             _long = each['longitude']
+            _label = each['label']
+            _loc = each['loc']
         except:
             pass
 
-        do_scrap.delay(_url, _deviceId, _type, _lat, _long)
+        do_scrap.delay(_url, _deviceId, _type, _lat, _long, _label, _loc)
 
 
 @celery.task
-def do_scrap(url, d_id, d_type, lat, lon):
+def do_scrap(url, d_id, d_type, lat, lon, label, loc):
 
     TEMP_JSON = {
         "deviceId": d_id,
         "deviceType": d_type,
         "lat": lat,
         "long": lon,
+        "label": label,
+        "loc": loc,
         "payload": {
             "d": {}
         },
