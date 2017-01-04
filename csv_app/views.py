@@ -283,4 +283,4 @@ def retrive_deviceid(request, deviceid):
     except Exception as e:
         print e
 
-    return render_to_csv_response(doc)
+    return render_to_csv_response(doc, filename=str(deviceid), append_datestamp=True)
