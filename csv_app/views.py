@@ -273,7 +273,7 @@ def retrive(request, deviceid, gte, lte):
     except Exception as e:
         print e
 
-    return render_to_csv_response(doc)
+    return render_to_csv_response(doc, filename=str(deviceid), append_datestamp=True)
 
 
 @api_view(['GET'])
